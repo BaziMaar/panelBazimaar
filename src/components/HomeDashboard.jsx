@@ -165,9 +165,52 @@ const Home = () => {
               <p>Weekly Withdrawal: {dailyUsers}</p>
             </StyledCard>
           </div>
-
+          <div style={{ textAlign: 'center', fontFamily: 'monospace', fontSize: 'large', paddingBottom: '20px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', color: 'lightblue' }}>
+            <h2>Dragon Tiger</h2>
+          </div>
+          <div className="dashboard">
+            <StyledCard onClick={() => goToCardWindow('dragonTiger')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Main Dashboard</h2>
+              <p>Total : {totalUsers}</p>
+              <p>Weekly Users: {dailyUsers}</p>
+              <p>Daily Users: {dailyUsers}</p>
+            </StyledCard>
+            <StyledCard onClick={() => goToCardWindow('products')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Bet Placed</h2>
+              <p>Total Deposit: {totalUsers}</p>
+              <p>Total Withdrawl: {totalUsers}</p>
+            </StyledCard>
+            <StyledCard onClick={() => console.log("Sub-Dealer clicked")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2> Winning/Losing Bets</h2>
+              <p>Weekly Deposit: {totalUsers}</p>
+              <p>Weekly Withdrawal: {dailyUsers}</p>
+            </StyledCard>
+          </div>
+          <div style={{ textAlign: 'center', fontFamily: 'monospace', fontSize: 'large', paddingBottom: '20px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', color: 'lightblue' }}>
+            <h2>Color Raja</h2>
+          </div>
+          <div className="dashboard">
+            <StyledCard onClick={() => goToCardWindow('colorRaja')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Main Dashboard</h2>
+              <p>Total : {totalUsers}</p>
+              <p>Weekly Users: {dailyUsers}</p>
+              <p>Daily Users: {dailyUsers}</p>
+            </StyledCard>
+            <StyledCard onClick={() => goToCardWindow('products')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Bet Placed</h2>
+              <p>Total Deposit: {totalUsers}</p>
+              <p>Total Withdrawl: {totalUsers}</p>
+            </StyledCard>
+            <StyledCard onClick={() => console.log("Sub-Dealer clicked")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2> Winning/Losing Bets</h2>
+              <p>Weekly Deposit: {totalUsers}</p>
+              <p>Weekly Withdrawal: {dailyUsers}</p>
+            </StyledCard>
+          </div>
+        
         </White3DCard>
       </div>
+      
       <footer style={{ position: 'absolute',marginTop:20, bottom: 0, left: 0, width: '100%', textAlign: 'center', background: '#fff', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 -4px 8px rgba(0, 0, 0, 0.1)', color: '#A8FF7A'}}>@2024 - Flipkart Home Dashboard</footer>
     </div>
     </>

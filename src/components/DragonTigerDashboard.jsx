@@ -31,7 +31,7 @@ const CardContainer = ({ eventData, secondEvent }) => {
     }
   }, [secondEvent]);
 
-  const { red, yellow, blue } = eventData;
+  const { dragon,tiger,tie } = eventData;
 
   const cardStyle = {
     flex: '1',
@@ -44,32 +44,32 @@ const CardContainer = ({ eventData, secondEvent }) => {
   return (
     <div style={{ background:'#081A30', color:'lightblue'}}>
     <div style={{marginTop:'0px', textAlign: 'center', background:'#081A30', color:'lightblue'}}>
-      <h2 style={{ color: 'lightblue', fontSize: '30px', marginBottom: '10px' }}>Spin Dashboard</h2>
+      <h2 style={{ color: 'lightblue', fontSize: '30px', marginBottom: '10px' }}>Dragon Tiger Dashboard</h2>
       <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, #2980B9, #6DD5FA)' }}>
         <CardContent>
           
-          <p style={{ color: '#fff', fontSize: '23px', marginBottom: '10px',fontWeight:'bold' }}>Waiting Time: {timing}</p>
-          <p style={{ color: '#fff', fontSize: '23px', marginBottom: '10px',fontWeight:'bold' }}>Betting Time: {number}</p>
-          <p style={{ color: '#fff', fontSize: '23px', marginBottom: '10px',fontWeight:'bold' }}>Result: {result!==''?result:"Waiting for Result"}</p>
+          <p style={{ color: '#fff', fontSize: '23px', marginBottom: '10px',fontWeight:'bold' }}>Betting Time: {timing}</p>
+          <p style={{ color: '#fff', fontSize: '23px', marginBottom: '10px',fontWeight:'bold' }}>Waiting Time: {number}</p>
+          <p style={{ color: '#fff', fontSize: '23px', marginBottom: '10px',fontWeight:'bold' }}>Result: {result!==''?result===1?"Dragon":result===0?"Tie":"Tiger":"Waiting for Result"}</p>
         </CardContent>
       </Card>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255, 99, 71, 0.2), rgba(255, 99, 71, 0.5))' }}>
           <CardContent>
-            <h3 style={{ color: '#ff6347' }}>Red Card</h3>
-            <p>Total Amount Bet Placed: {red}.</p>
+            <h3 style={{ color: '#ff6347' }}>Dragon Card</h3>
+            <p>Total Amount Bet Placed: {dragon/2}.</p>
           </CardContent>
         </Card>
         <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255, 255, 0, 0.2), rgba(255, 255, 0, 0.5))' }}>
           <CardContent>
-            <h3 style={{ color: '#ffd700' }}>Yellow Card</h3>
-            <p>Total Amount Bet Placed: {yellow}.</p>
+            <h3 style={{ color: '#ffd700' }}>Tiger Card</h3>
+            <p>Total Amount Bet Placed: {tiger/2}.</p>
           </CardContent>
         </Card>
         <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(30, 144, 255, 0.2), rgba(30, 144, 255, 0.5))' }}>
           <CardContent>
-            <h3 style={{ color: '#1e90ff' }}>Blue Card</h3>
-            <p>Total Amount Bet Placed: {blue}</p>
+            <h3 style={{ color: '#1e90ff' }}>Tie Card</h3>
+            <p>Total Amount Bet Placed: {tie/9}</p>
           </CardContent>
         </Card>
       </div>
@@ -80,8 +80,8 @@ const CardContainer = ({ eventData, secondEvent }) => {
             {lastBets.map((bet, index) => (
               <Card key={index} style={{ ...cardStyle, width: '200px', margin: '10px', background: 'linear-gradient(135deg, #98acf8, #cfd9ff)' }}>
                 <CardContent>
-                  <h3 style={{ color: 'lightblue', fontSize: '16px', marginBottom: '10px' }}>Last Bet {index===0?'':index}</h3>
-                  <p style={{ color: '#333', fontSize: '14px', marginBottom: '0' }}>{bet}</p>
+                  <h3 style={{ color: 'black', fontSize: '16px', marginBottom: '10px' }}>Last Bet {index===0?'':index}</h3>
+                  <p style={{ color: '#333', fontSize: '14px', marginBottom: '0' }}>{bet===0?"Tie":result===1?"Dragon":"Tiger"}</p>
                 </CardContent>
               </Card>
             ))}
@@ -93,18 +93,18 @@ const CardContainer = ({ eventData, secondEvent }) => {
   );
 };
 
-const MainSpinDashboard = () => {
+const DragonTigerDashboard = () => {
   const [eventData, setEventData] = useState('');
   const [secondEvent, setSecondEvent] = useState(null);
 
   useEffect(() => {
     const socket = io('http://98.70.13.241:4000');
 
-    socket.on('spinPlaced', (data) => {
+    socket.on('dragonPlaced', (data) => {
       console.log('Received data:', data);
       setEventData(data);
     });
-    socket.on('luckyBet', (data) => {
+    socket.on('dragonTiger', (data) => {
       console.log('Received data:', data);
       setSecondEvent(data);
     });
@@ -123,5 +123,5 @@ const MainSpinDashboard = () => {
   );
 };
 
-export default MainSpinDashboard;
+export default DragonTigerDashboard;
 

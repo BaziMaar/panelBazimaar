@@ -28,6 +28,8 @@ const LastUsers = () => {
   const [open,setOpen]=useState(false)
   const [searchQuery, setSearchQuery] = useState('');
   const [data,setData]=useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [phone, setPhone] = useState('');
   const [columns,setColumn]=useState([]);
   const[activeColumn,setActiveColumn]=useState('')
   const handleColumnHeaderClick = (column) => {
@@ -104,7 +106,16 @@ const LastUsers = () => {
             width:250,
             cellClassName:'property'
           },
-          ,
+          {
+            field: 'actions',
+            headerName: 'Actions',
+            width: 200,
+            renderCell: (params) => (
+              <Button variant="contained" size="small" onClick={() => handleOpenModal(params.row.phone)}>
+                Action
+              </Button>
+            ),
+          },
   {
     field: 'transactionsButton',
     headerName: 'Transactions',
@@ -158,6 +169,10 @@ const LastUsers = () => {
   const handleBet=(phone)=>{
     navigate(`/bet/${phone}`)
   }
+  const handleOpenModal = (phone) => {
+    setOpenModal(true);
+    setPhone(phone);
+  };
   
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);

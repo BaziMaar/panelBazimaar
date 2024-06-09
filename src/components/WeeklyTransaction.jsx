@@ -43,7 +43,7 @@ const WeeklyTransactionTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://98.70.13.241/wallet/getTrans`);
+        const response = await axios.get(`http://98.70.13.241:3000/wallet/getTrans`);
         const allTransactions = response.data.wallets;
         
         // Get the start and end date of the current week
@@ -55,8 +55,9 @@ const WeeklyTransactionTable = () => {
           const transactionDate = moment(transaction.time).toDate();
           return transactionDate >= startOfWeek && transactionDate <= endOfWeek;
         });
+        console.log(filteredTransactions)
     
-        const data = response.data.wallets.reduce((acc, user) => {
+        const data = filteredTransactions.reduce((acc, user) => {
           return [
             ...acc,
             ...user.walletTrans.map((transaction) => ({

@@ -11,6 +11,7 @@ import {
   Grid,
   Drawer,
   IconButton,
+  CircularProgress
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CrossIcon from '../assets/cross.svg';
@@ -27,6 +28,7 @@ const TransactionTable = () => {
   const [columns,setColumn]=useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const[activeColumn,setActiveColumn]=useState('')
+  const [isLoading, setIsLoading] = useState(true);
   const handleColumnHeaderClick = (column) => {
     setActiveColumn(column.field === activeColumn ? null : column.field);
   };
@@ -43,7 +45,7 @@ const TransactionTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://98.70.13.241/wallet/getTrans`);
+        const response = await axios.get(`http://98.70.13.241:3000/wallet/getTrans`);
         setTransactions(response.data.wallets);
         const data = response.data.wallets.reduce((acc, user) => {
           return [
@@ -150,6 +152,7 @@ const TransactionTable = () => {
           },
           
       ]
+      setIsLoading(false);
       setColumn(columns)
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -283,7 +286,11 @@ const TransactionTable = () => {
         <Link to="/week" onClick={() => setDrawerOpen(false)} style={linkStyle}>Weekly Transactions</Link>
       </div>
     </Drawer>
-            <DataGrid
+    {isLoading ? ( // Conditional rendering based on loading state
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)' ,background:'#081A30'}}>
+          <CircularProgress />
+        </div>
+      ) : (<DataGrid
         rows={data}
         columns={columns.map((column) => ({
           ...column,
@@ -332,6 +339,7 @@ const TransactionTable = () => {
             /* Add any other styles you want to apply */
           }
         }}/>
+      )}
       {/* Main Content */}
 
       {/* Footer */}

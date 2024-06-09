@@ -13,6 +13,8 @@ import WeeklyTransactionTable from './components/WeeklyTransaction';
 import DailyTransactionTable from './components/DailyTransaction';
 import PendingTransaction from './components/PendingTransaction';
 import LastUsers from './components/WeeklyUsers';
+import ColorRajaDashboard from './components/ColorRajaDashboard';
+import DragonTigerDashboard from './components/DragonTigerDashboard';
 function App() {
   return (
         <Router>
@@ -28,6 +30,8 @@ function App() {
         <Route path="/weeklyUsers" element={<LastUsers/>} />
         <Route path="/products" element={<ProductDashboard/>}/>
         <Route path="/main" element={<MainSpinDashboard/>}/>
+        <Route path="/colorRaja" element={<ColorRajaDashboard/>}/>
+        <Route path="/dragonTiger" element={<DragonTigerDashboard/>}/>
       </Routes>
     </Router>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
-import { IconButton, Drawer, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { IconButton, Drawer, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions,CircularProgress } from '@mui/material';
 import moment from 'moment';
 import { Link, useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -17,6 +17,7 @@ const AllUsers = () => {
   const [phone, setPhone] = useState('');
   const [addMoney, setAddMoney] = useState(null);
   const [deductMoney, setDeductMoney] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -28,7 +29,8 @@ const AllUsers = () => {
     }
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://98.70.13.241/user/getUser`);
+        const response = await axios.get(`http://98.70.13.241:3000/user/getUser`);
+        console.log(response)
         setTransactions(response.data.data);
 
         const formattedData = response.data.data.map((transaction) => ({
@@ -39,7 +41,7 @@ const AllUsers = () => {
           wallet: transaction.wallet.toFixed(2),
           withdrawal_amount: Math.abs(transaction.withdrawal_amount).toFixed(2),
           referred_wallet: Math.abs(transaction.referred_wallet).toFixed(2),
-          created_at: moment(transaction.createdAt).format('YYYY-MM-DD'),
+          created_at: moment(transaction.createdAt).format('YYYY-MM-DD'), 
           referred_users: transaction.refer_id
         }));
 
@@ -64,8 +66,10 @@ const AllUsers = () => {
               </Button>
             ),
           },
+          
         ];
 
+        setIsLoading(false); 
         setColumns(tableColumns);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -204,14 +208,18 @@ const AllUsers = () => {
     </Drawer>
 
       {/* DataGrid component */}
-      <DataGrid style={{background:'#081A30', color: 'lightblue'}}
+      {isLoading ? ( // Conditional rendering based on loading state
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)' ,background:'#081A30'}}>
+          <CircularProgress />
+        </div>
+      ) : (<DataGrid style={{background:'#081A30', color: 'lightblue'}}
         rows={data}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[5, 10, 20]}
         // autoHeight
         // disableSelectionOnClick
-      />
+      />)}
 
       {/* Dialog component */}
       <Dialog open={openModal} onClose={handleCloseModal} style={{background:'#081A30', color: 'lightblue'}}>
