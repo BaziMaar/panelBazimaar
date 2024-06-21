@@ -25,7 +25,7 @@ const HistoryTrans = (props) => {
     try {
       
       console.log(`>>>>>>>>json>>>>>>`);
-      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/getTransiction?phone=${phone.phone}`);
+      const response = await axios.get(`http://sattajodileak.com/wallet/getTransiction?phone=${props.phone}`);
       setTransactions(response.data.wallet);
       console.log(`>>>>>>>><<<${JSON.stringify(response.data.wallet)}`)
       const sum = response.data.wallet.walletTrans.reduce((acc, transaction) => {
@@ -249,11 +249,11 @@ const HistoryTrans = (props) => {
         },
       }}
     />
-      {activeColumn && (
+      {/* {activeColumn && (
         <div style={{ background: '#F1F1F1', color: 'black', padding: '10px' }}>
           <TextField label={`Search ${activeColumn}`} variant="outlined" fullWidth />
         </div>
-      )}
+      )} */}
 
 
     <footer style={{ textAlign: 'center', padding: '10px', color: '#99E9FA',background:'#DADADA' }}>

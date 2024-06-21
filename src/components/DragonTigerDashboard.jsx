@@ -54,7 +54,7 @@ const CardContainer = ({ eventData, secondEvent }) => {
         </CardContent>
       </Card>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255, 99, 71, 0.2), rgba(255, 99, 71, 0.5))' }}>
+        <Card  style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255, 99, 71, 0.2), rgba(255, 99, 71, 0.5))' }}>
           <CardContent>
             <h3 style={{ color: '#ff6347' }}>Dragon Card</h3>
             <p>Total Amount Bet Placed: {dragon/2}.</p>
@@ -98,7 +98,7 @@ const DragonTigerDashboard = () => {
   const [secondEvent, setSecondEvent] = useState(null);
 
   useEffect(() => {
-    const socket = io('http://98.70.13.241:4000');
+    const socket = io('https://socket.sattajodileak.com');
 
     socket.on('dragonPlaced', (data) => {
       console.log('Received data:', data);

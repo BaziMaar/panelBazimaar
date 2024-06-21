@@ -49,7 +49,7 @@ const DailyTransactionTable = () => {
     }
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://98.70.13.241/wallet/getTrans`);
+        const response = await axios.get(`https://sattajodileak.com/wallet/getTrans`);
         const allTransactions = response.data.wallets;
         
         // Get the start and end date of the current week

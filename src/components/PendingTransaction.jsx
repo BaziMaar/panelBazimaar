@@ -41,7 +41,7 @@ const PendingTransaction = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://98.70.13.241/wallet/pendingTrans`);
+        const response = await axios.get(`https://sattajodileak.com/wallet/pendingTrans`);
         setTransactions(response.data.wallets);
         const data = response.data.wallets.reduce((acc, user) => {
           return [

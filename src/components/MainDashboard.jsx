@@ -98,7 +98,7 @@ const MainSpinDashboard = () => {
   const [secondEvent, setSecondEvent] = useState(null);
 
   useEffect(() => {
-    const socket = io('http://98.70.13.241:4000');
+    const socket = io('https://socket.sattajodileak.com');
 
     socket.on('spinPlaced', (data) => {
       console.log('Received data:', data);

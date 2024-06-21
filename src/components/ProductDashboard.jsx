@@ -76,7 +76,7 @@ export default function ProductDashboard() {
 
   const handleDialogSubmit = (productData) => {
     // Send data to POST API
-    axios.post('http://98.70.13.241:8000/addProducts', productData)
+    axios.post('https://sattajodileak.com:8000/addProducts', productData)
       .then(response => {
         console.log('Post successful', response);
         closeDialog();

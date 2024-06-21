@@ -53,7 +53,7 @@ const LastUsers = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://98.70.13.241/user/getUser`);
+        const response = await axios.get(`https://sattajodileak.com/user/getUser`);
         console.log(`>>>>>>>>>>>${JSON.stringify(response)}`)
         setTransactions(response.data.data);
         const finData=filterTransactionsLast7Days(response.data.data)

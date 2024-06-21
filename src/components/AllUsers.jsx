@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
-import { IconButton, Drawer, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions,CircularProgress } from '@mui/material';
+import { IconButton, Drawer, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from '@mui/material';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts';
 import moment from 'moment';
 import { Link, useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -19,18 +20,19 @@ const AllUsers = () => {
   const [deductMoney, setDeductMoney] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     const storedPassword = localStorage.getItem('password');
-    console.log(storedUsername)
 
     if (storedUsername !== 'ashu' || storedPassword !== '54321@sHu') {
       window.location.replace('/');
     }
+
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://98.70.13.241:3000/user/getUser`);
-        console.log(response)
+        const response = await axios.get(`https://sattajodileak.com/user/getUser`);
         setTransactions(response.data.data);
 
         const formattedData = response.data.data.map((transaction) => ({
@@ -66,6 +68,76 @@ const AllUsers = () => {
               </Button>
             ),
           },
+          {
+            field: 'transactionsButton',
+            headerName: 'Transactions',
+            width: 150,
+            renderCell: (params) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => handlePayment(params.row.phone)}
+                >
+                  Transactions
+                </Button>
+            ),
+          },
+          {
+            field: 'betButton',
+            headerName: 'Aviator Bet',
+            width: 150,
+            renderCell: (params) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => handleBet(params.row.phone)}
+                >
+                  Bet
+                </Button>
+            ),
+          },
+          {
+            field: 'dragonTigerBetButton',
+            headerName: 'Dragon Tiger Bet',
+            width: 150,
+            renderCell: (params) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => handleBet(params.row.phone)}
+                >
+                  Bet
+                </Button>
+            ),
+          },
+          {
+            field: 'colorRajaBetButton',
+            headerName: 'Color Raja Bet',
+            width: 150,
+            renderCell: (params) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => handleBet(params.row.phone)}
+                >
+                  Bet
+                </Button>
+            ),
+          },
+          {
+            field: 'minesBetButton',
+            headerName: 'Mines Bet',
+            width: 150,
+            renderCell: (params) => (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => handleBet(params.row.phone)}
+                >
+                  Bet
+                </Button>
+            ),
+          }
           
         ];
 
@@ -79,7 +151,9 @@ const AllUsers = () => {
     fetchData();
   }, []);
 
-  const navigate = useNavigate();
+  const handleBet = (phone) => {
+    navigate(`/bet/${phone}`);
+  };
 
   const handlePayment = (phone) => {
     navigate(`/history/${phone}`);
@@ -147,8 +221,6 @@ const AllUsers = () => {
     margin: '8px 0',
     display: 'block',
     transition: 'color 0.3s',
-    backgroundColor:'#081A30',
-    
   };
 
   linkStyle[':hover'] = {
@@ -156,7 +228,7 @@ const AllUsers = () => {
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: '#081A30', color: 'lightblue', minHeight: '100vh' }}>
       <header
         style={{
           backgroundColor: '#102339',
@@ -184,42 +256,56 @@ const AllUsers = () => {
       </header>
 
       {/* Drawer component */}
-
       <Drawer 
-      anchor="left"
-      open={isDrawerOpen}
-      onClose={toggleDrawer(false)}
-      // style={{background:'#102339'}}
-    >
-      <div style={{ textAlign: 'left', padding: '10px', background:'#102339',  }}>
-                <img src={CrossIcon} alt="Hamburger Icon" style={{ width: '25px', height: '25px', cursor: 'pointer', background:'white', borderRadius:'17px'}} onClick={toggleDrawer(false)}/>
-                </div>
-      {/* Sidebar content goes here */}
-      <div style={{  height: '100vh',width: '250px', padding: '20px', background: '#102339'}}>
-        {/* List of links in the drawer */}
-        <Link to="/transaction" onClick={() => setDrawerOpen(false)} style={linkStyle}>All Transactions</Link>
-        <Link to="/pending" onClick={() => setDrawerOpen(false)} style={linkStyle}>Pending Requests</Link>
-        <Link to="/approved" onClick={() => setDrawerOpen(false)} style={linkStyle}>Approved Transactions</Link>
-        <Link to="/users" onClick={() => setDrawerOpen(false)} style={linkStyle}>All Users</Link>
-        <Link to="/weeklyUsers" onClick={() => setDrawerOpen(false)} style={linkStyle}>Weekly Users</Link>
-        <Link to="/daily" onClick={() => setDrawerOpen(false)} style={linkStyle}>Daily Transactions</Link>
-        <Link to="/week" onClick={() => setDrawerOpen(false)} style={linkStyle}>Weekly Transactions</Link>
-      </div>
-    </Drawer>
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={toggleDrawer(false)}
+      >
+        <div style={{ textAlign: 'left', padding: '10px', background:'#102339',  }}>
+          <img src={CrossIcon} alt="Hamburger Icon" style={{ width: '25px', height: '25px', cursor: 'pointer', background:'white', borderRadius:'17px'}} onClick={toggleDrawer(false)}/>
+        </div>
+        <div style={{ height: '100vh', width: '250px', padding: '20px', background: '#102339'}}>
+          <Link to="/transaction" onClick={() => setDrawerOpen(false)} style={linkStyle}>All Transactions</Link>
+          <Link to="/pending" onClick={() => setDrawerOpen(false)} style={linkStyle}>Pending Requests</Link>
+          <Link to="/approved" onClick={() => setDrawerOpen(false)} style={linkStyle}>Approved Transactions</Link>
+          <Link to="/users" onClick={() => setDrawerOpen(false)} style={linkStyle}>All Users</Link>
+          <Link to="/weeklyUsers" onClick={() => setDrawerOpen(false)} style={linkStyle}>Weekly Users</Link>
+          <Link to="/daily" onClick={() => setDrawerOpen(false)} style={linkStyle}>Daily Transactions</Link>
+          <Link to="/week" onClick={() => setDrawerOpen(false)} style={linkStyle}>Weekly Transactions</Link>
+        </div>
+      </Drawer>
 
       {/* DataGrid component */}
       {isLoading ? ( // Conditional rendering based on loading state
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)' ,background:'#081A30'}}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)'}}>
           <CircularProgress />
         </div>
-      ) : (<DataGrid style={{background:'#081A30', color: 'lightblue'}}
-        rows={data}
-        columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[5, 10, 20]}
-        // autoHeight
-        // disableSelectionOnClick
-      />)}
+      ) : (
+        <div style={{ padding: '20px' }}>
+          <DataGrid style={{ background:'#081A30', color: 'lightblue' }}
+            rows={data}
+            columns={columns}
+            pageSize={10}
+            rowsPerPageOptions={[5, 10, 20]}
+          />
+        </div>
+      )}
+
+      {/* Chart component */}
+      <div style={{ padding: '20px' }}>
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="wallet" fill="#8884d8" />
+            <Bar dataKey="withdrawal_amount" fill="#82ca9d" />
+            <Bar dataKey="referred_wallet" fill="#ffc658" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
 
       {/* Dialog component */}
       <Dialog open={openModal} onClose={handleCloseModal} style={{background:'#081A30', color: 'lightblue'}}>

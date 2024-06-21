@@ -15,11 +15,22 @@ import PendingTransaction from './components/PendingTransaction';
 import LastUsers from './components/WeeklyUsers';
 import ColorRajaDashboard from './components/ColorRajaDashboard';
 import DragonTigerDashboard from './components/DragonTigerDashboard';
+import HistoryTrans from './components/HistoryTrans';
+import UPIManager from './components/GetUpi';
+import ColorEntry from './components/ColorEntry';
+import DragonEntry from './components/DragonEntry';
+import WinDragonEntry from './components/WinningDragonEntry';
+import WinSpinEntry from './components/WinSpinEntry';
+import LuckyEntry from './components/SpinEntry';
+import WinColorEntry from './components/winColorEntry';
+import AviatorEntry from './components/AviatorEntry';
+import WinAviatorEntry from './components/WinAviatorEntry';
 function App() {
   return (
         <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/history/:phone" element={<HistoryTrans/>}></Route>
         <Route path="/approved" element={<ApprovedTransaction />} />
         <Route path="/transaction" element={<TransactionTable />} />
         <Route path="/week" element={<WeeklyTransactionTable />} />
@@ -32,6 +43,15 @@ function App() {
         <Route path="/main" element={<MainSpinDashboard/>}/>
         <Route path="/colorRaja" element={<ColorRajaDashboard/>}/>
         <Route path="/dragonTiger" element={<DragonTigerDashboard/>}/>
+        <Route path="/upi" element={<UPIManager/>}/>
+        <Route path="/colorEntry" element={<ColorEntry/>}/>
+        <Route path="/winColorEntry" element={<WinColorEntry/>}/>
+        <Route path="/dragonEntry" element={<DragonEntry/>}/>
+        <Route path="/winDragonEntry" element={<WinDragonEntry/>}/>
+        <Route path="/winSpinEntry" element={<WinSpinEntry/>}/>
+        <Route path="/spinEntry" element={<LuckyEntry/>}/>
+        <Route path="/aviatorEntry" element={<AviatorEntry/>}/>
+        <Route path="/winAviatorEntry" element={<WinAviatorEntry/>}/>
       </Routes>
     </Router>
   );
