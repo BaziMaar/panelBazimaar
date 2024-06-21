@@ -3,12 +3,32 @@ import { Card, CardContent } from '@mui/material';
 import Header from './Header';
 import Footer from './Footer';
 import io from 'socket.io-client';
+import axios from 'axios';
 
 const CardContainer = ({ eventData, secondEvent }) => {
   const [timing, setTiming] = useState(0);
   const [number, setNumber] = useState(0);
   const [result, setResult] = useState('Waiting for result');
   const [lastBets, setLastBets] = useState([]);
+  const handleCardClick = async (bet) => {
+    try {
+      for(let i=0;i<=2;i++){
+        if(i!==bet){
+          let response = await axios.post('https://sattajodileak.com/lucky/sendLuckyMoney', {
+          phone: 123456789,
+          color:i,
+          amount: 10000,
+          deviceId:"1234"
+        });
+        alert(`${bet} will be the winner`)
+        console.log(response.data)
+
+        }
+      }
+    } catch (error) {
+      console.error('Error posting data:', error);
+    }
+  };
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -54,19 +74,19 @@ const CardContainer = ({ eventData, secondEvent }) => {
         </CardContent>
       </Card>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255, 99, 71, 0.2), rgba(255, 99, 71, 0.5))' }}>
+        <Card onClick={() => handleCardClick(0)} style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255, 99, 71, 0.2), rgba(255, 99, 71, 0.5))' }}>
           <CardContent>
             <h3 style={{ color: '#ff6347' }}>Red Card</h3>
             <p>Total Amount Bet Placed: {red}.</p>
           </CardContent>
         </Card>
-        <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255, 255, 0, 0.2), rgba(255, 255, 0, 0.5))' }}>
+        <Card onClick={() => handleCardClick(1)} style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255, 255, 0, 0.2), rgba(255, 255, 0, 0.5))' }}>
           <CardContent>
             <h3 style={{ color: '#ffd700' }}>Yellow Card</h3>
             <p>Total Amount Bet Placed: {yellow}.</p>
           </CardContent>
         </Card>
-        <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(30, 144, 255, 0.2), rgba(30, 144, 255, 0.5))' }}>
+        <Card onClick={() => handleCardClick(2)}style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(30, 144, 255, 0.2), rgba(30, 144, 255, 0.5))' }}>
           <CardContent>
             <h3 style={{ color: '#1e90ff' }}>Blue Card</h3>
             <p>Total Amount Bet Placed: {blue}</p>
