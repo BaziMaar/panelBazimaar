@@ -6,6 +6,7 @@ const UPIManager = () => {
   const [upiList, setUpiList] = useState([]);
   const [newUpi, setNewUpi] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const API_KEY = 'your-api-key-here'; // Replace with your actual API key
 
   useEffect(() => {
@@ -14,37 +15,53 @@ const UPIManager = () => {
 
   const fetchUpiList = async () => {
     try {
-      const response = await axios.get('https://sattajodileak.com/user/getUPI');
+      const response = await axios.get('https://sattajodileak.com/user/getUPI', {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`
+        }
+      });
       setUpiList(response.data);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching UPI list:', error);
+      setError('Error fetching UPI list.');
       setLoading(false);
     }
   };
 
   const addUpi = async () => {
     try {
-      const response = await axios.get('https://sattajodileak.com/user/postUpi', { upi: newUpi }
+      const response = await axios.post('https://sattajodileak.com/user/postUpi', 
+        { upi: newUpi },
+        {
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`
+          }
+        }
       );
-      setUpiList([...upiList, response.data]);
+      alert(`${newUpi}  new upi added successfully`)
       setNewUpi('');
     } catch (error) {
       console.error('Error adding UPI:', error);
+      setError('Error adding UPI.');
     }
   };
 
   const deleteUpi = async (upiToDelete) => {
     try {
-      await axios.get('https://sattajodileak.com/user/removeUpi', {
-        data: { upi: upiToDelete },
-        headers: {
-          'Authorization': `Bearer ${API_KEY}`
+      await axios.post('https://sattajodileak.com/user/removeUpi', 
+        { upi: upiToDelete },
+        {
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`
+          }
         }
-      });
+      );
+      alert(`${upiToDelete}  deleted successfully`)
       setUpiList(upiList.filter(upi => upi !== upiToDelete));
     } catch (error) {
       console.error('Error deleting UPI:', error);
+      setError('Error deleting UPI.');
     }
   };
 
@@ -55,6 +72,7 @@ const UPIManager = () => {
   return (
     <div className="container">
       <h1>UPI Manager</h1>
+      {error && <div className="error">{error}</div>}
       <div className="input-container">
         <input
           type="text"
@@ -66,7 +84,7 @@ const UPIManager = () => {
       </div>
       <ul>
         {upiList.map((upi, index) => (
-          <li key={index}>
+          <li key={upi.id || index}>
             {upi}
             <button onClick={() => deleteUpi(upi)}>Delete</button>
           </li>
