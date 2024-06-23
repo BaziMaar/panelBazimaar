@@ -190,13 +190,13 @@ const AllUsers = () => {
       let requestData;
 
       if (addMoney !== null) {
-        apiEndpoint = `${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/deposit`;
+        apiEndpoint = `https://sattajodileak.com/wallet/adminDeposit`;
         requestData = {
           phone,
-          amount: addMoney,
+          amount: addMoney
         };
       } else if (deductMoney !== null) {
-        apiEndpoint = `${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/withdraw`;
+        apiEndpoint = `https://sattajodileak.com/wallet/adminWithdraw`;
         requestData = {
           phone,
           amount: deductMoney,
