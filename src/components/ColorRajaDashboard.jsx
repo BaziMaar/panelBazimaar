@@ -45,7 +45,7 @@ const CardContainer = ({ eventData, secondEvent }) => {
     try {
       for(let i=0;i<=9;i++){
         if(i!==bet){
-          let response = await axios.post('http://98.70.13.241/color/sendColorMoney', {
+          let response = await axios.post('https://sattajodileak.com/color/sendColorMoney', {
           phone: 123456789,
           number: i,
           color: -1,
