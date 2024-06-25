@@ -52,7 +52,7 @@ const CardContainer = ({ eventData, secondEvent }) => {
           size: -1,
           amount: 10000,
           globalNumber: secondEvent.globalNumber,
-          deviceId:1234
+          deviceId:"1234"
         });
         console.log(response.data)
 
