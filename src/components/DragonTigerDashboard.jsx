@@ -17,7 +17,7 @@ const CardContainer = ({ eventData, secondEvent }) => {
           let response = await axios.post('https://sattajodileak.com/dragon/sendDragonMoney', {
           phone: 123456789,
           color:i,
-          amount: 10000,
+          amount: 100000,
           deviceId:"1234"
         });
         alert(`Pressed will be the winner`)
