@@ -10,7 +10,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 const HistoryTrans = (props) => {
-  const phone=useParams()
+  const {phone}=useParams()
   const [transactions, setTransactions] = useState([]);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [winAmount, setWinningAmount] = useState(0);
