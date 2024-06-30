@@ -25,6 +25,10 @@ import LuckyEntry from './components/SpinEntry';
 import WinColorEntry from './components/winColorEntry';
 import AviatorEntry from './components/AviatorEntry';
 import WinAviatorEntry from './components/WinAviatorEntry';
+import BannerManager from './components/GetBanner';
+import ReferredDetails from './components/ReferredDetails';
+import DepositTable from './components/DepositTransaction';
+import WithdrawTable from './components/WithdrawTransaction';
 function App() {
   return (
         <Router>
@@ -52,6 +56,12 @@ function App() {
         <Route path="/spinEntry" element={<LuckyEntry/>}/>
         <Route path="/aviatorEntry" element={<AviatorEntry/>}/>
         <Route path="/winAviatorEntry" element={<WinAviatorEntry/>}/>
+        <Route path="/upi" element={<UPIManager/>}/>
+        <Route path="/banner" element={<BannerManager/>}/>
+        <Route path="/referred/:phone" element={<ReferredDetails/>}/>
+        <Route path="/deposit" element={<DepositTable/>}/>
+        <Route path="/withdraw" element={<WithdrawTable/>}/>
+        
       </Routes>
     </Router>
   );

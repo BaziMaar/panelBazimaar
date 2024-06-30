@@ -43,6 +43,7 @@ const CardContainer = ({ eventData, secondEvent }) => {
 
   const handleCardClick = async (bet) => {
     try {
+      alert(`You have selected the ${bet} Number`)
       for(let i=0;i<=9;i++){
         if(i!==bet){
           let response = await axios.post('https://sattajodileak.com/color/sendColorMoney', {

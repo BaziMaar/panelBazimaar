@@ -4,6 +4,8 @@ import Header from './Header';
 import { useState } from 'react';
 import { styled } from '@mui/system';
 import { lightBlue } from '@mui/material/colors';
+import axios from 'axios'
+import moment from 'moment';
 
 const getShadowColor = (gradient) => {
   // Assuming gradient format is linear-gradient(angle, color1, color2)
@@ -39,8 +41,81 @@ const StyledCard = styled('div')(({ gradient }) => ({
 
 const Home = () => {
   // Mock data for number of users
-  const totalUsers = 1000;
-  const dailyUsers = 50;
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [dailyUsers, setDailyUsers] = useState(0);
+  const [weeklyUsers, setWeeklyUsers] = useState(0);
+  const [totalDeposit, setTotalDeposit] = useState(0);
+  const [todayDeposit, setTodayDeposit] = useState(0);
+  const [totalWithdrawal, setTotalWithdrawal] = useState(0);
+  const [todayWithdrawal, setTodayWithdrawal] = useState(0);
+
+
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(`https://sattajodileak.com/user/getUser`);
+      const users = response.data.data;
+
+      // Set total users
+      setTotalUsers(users.length);
+
+      // Get today's date and start of the week date
+      const today = moment().startOf('day');
+      const startOfWeek = moment().startOf('week');
+
+      // Filter users created today and this week
+      const dailyUsersCount = users.filter(user => moment(user.created_at).isSame(today, 'day')).length;
+      const weeklyUsersCount = users.filter(user => moment(user.created_at).isSameOrAfter(startOfWeek)).length;
+
+      // Set daily and weekly users
+      setDailyUsers(dailyUsersCount);
+      setWeeklyUsers(weeklyUsersCount);
+      console.log(`>>>>>>>>>`,dailyUsers);
+    } catch (error) {
+      alert(error);
+    }
+  };
+  const fetchTrans = async () => {
+    try {
+      const response = await axios.get(`https://sattajodileak.com/user/getUser`);
+      const users = response.data.data;
+
+      let totalDep = 0;
+      let todayDep = 0;
+      let totalWith = 0;
+      let todayWith = 0;
+      const today = moment().startOf('day');
+
+      users.forEach(user => {
+        if (Array.isArray(user.walletTrans)) {
+          user.walletTrans.forEach(transaction => {
+            const amount = parseFloat(transaction.amount);
+            const transactionDate = moment(transaction.time);
+
+            if (amount > 0) {
+              totalDep += amount;
+              if (transactionDate.isSame(today, 'day')) {
+                todayDep += amount;
+              }
+            } else if (amount < 0) {
+              totalWith += Math.abs(amount);
+              if (transactionDate.isSame(today, 'day')) {
+                todayWith += Math.abs(amount);
+              }
+            }
+          });
+        }
+      });
+
+      setTotalDeposit(totalDep);
+      setTodayDeposit(todayDep);
+      setTotalWithdrawal(totalWith);
+      setTodayWithdrawal(todayWith);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -48,8 +123,11 @@ const Home = () => {
 
     if (storedUsername !== 'ashu' || storedPassword !== '54321@sHu') {
       window.location.replace('/');
-    }
-  }, []);
+      
+    } 
+    fetchUser();
+    fetchTrans();
+  }, []); // Empty dependency array to run only on component mount
 
   const goToCardWindow = (type) => {
     window.open(`/${type}`)
@@ -73,13 +151,13 @@ const Home = () => {
             </StyledCard>
             <StyledCard onClick={() => goToCardWindow('transaction')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>All Transactions</h2>
-              <p>Total Deposit: {totalUsers}</p>
-              <p>Total Withdrawl: {totalUsers}</p>
+              <p>Total Deposit: {totalDeposit}</p>
+              <p>Total Withdrawl: {totalWithdrawal}</p>
             </StyledCard>
             <StyledCard onClick={() => goToCardWindow("week")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Weekly Transactions</h2>
-              <p>Weekly Deposit: {totalUsers}</p>
-              <p>Weekly Withdrawal: {dailyUsers}</p>
+              <p>Weekly Deposit: {totalDeposit}</p>
+              <p>Weekly Withdrawal: {todayWithdrawal}</p>
             </StyledCard>
             <StyledCard onClick={() =>goToCardWindow("weeklyUsers")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Weekly Users</h2>
@@ -88,11 +166,17 @@ const Home = () => {
               <h2>UPI</h2>
               <p>all UPI : 3</p>
               </StyledCard>
+
           </div>
+
           <div style={{ textAlign: 'center', fontFamily: 'monospace', fontSize: 'large', paddingBottom: '20px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', color: '#333' }}>
             
           </div>
           <div className="dashboard">
+          <StyledCard   onClick={() => goToCardWindow('banner')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Banner</h2>
+              <p>all Banner : 2</p>
+              </StyledCard>
             <StyledCard onClick={() => goToCardWindow('approved')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Approved Transaction</h2>
               <p>Total : {totalUsers}</p>
@@ -106,8 +190,21 @@ const Home = () => {
             </StyledCard>
             <StyledCard onClick={() => goToCardWindow('daily')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Daily</h2>
-              <p>Daily Deposit: {totalUsers}</p>
-              <p>Daily Withdrawal: {dailyUsers}</p>
+              <p>Daily Deposit: {todayDeposit}</p>
+              <p>Daily Withdrawal: {todayWithdrawal}</p>
+            </StyledCard>
+          </div>
+          <div style={{ textAlign: 'center', fontFamily: 'monospace', fontSize: 'large', paddingBottom: '20px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', color: '#333' }}>  
+          </div>
+          <div className="dashboard">
+            <StyledCard onClick={() => goToCardWindow('deposit')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Deposit Transaction</h2>
+              <p>Total : {totalUsers}</p>
+            </StyledCard>
+            <StyledCard onClick={() => console.log("Sub-Dealer clicked")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Withdraw Transactions</h2>
+              <p>Total Winning: {totalUsers}</p>
+              <p>Total Loosing: {dailyUsers}</p>
             </StyledCard>
           </div>
           <div style={{ textAlign: 'center', fontFamily: 'monospace', fontSize: 'large', paddingBottom: '20px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', color: 'lightblue' }}>
