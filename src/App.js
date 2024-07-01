@@ -29,6 +29,10 @@ import BannerManager from './components/GetBanner';
 import ReferredDetails from './components/ReferredDetails';
 import DepositTable from './components/DepositTransaction';
 import WithdrawTable from './components/WithdrawTransaction';
+import AviatorBets from './components/AviatorBets';
+import DragonBets from './components/DragonBets';
+import LuckyBets from './components/LuckyBets';
+import ColorBets from './components/ColorBets';
 function App() {
   return (
         <Router>
@@ -61,6 +65,10 @@ function App() {
         <Route path="/referred/:phone" element={<ReferredDetails/>}/>
         <Route path="/deposit" element={<DepositTable/>}/>
         <Route path="/withdraw" element={<WithdrawTable/>}/>
+        <Route path="/aviatorBets/:phone" element={<AviatorBets/>}/>
+        <Route path="/luckyBets/:phone" element={<LuckyBets/>}/>
+        <Route path="/dragonBets/:phone" element={<DragonBets/>}/>
+        <Route path="/colorBets/:phone" element={<ColorBets/>}/>
         
       </Routes>
     </Router>
