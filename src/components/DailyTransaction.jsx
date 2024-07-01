@@ -213,7 +213,7 @@ const DailyTransactionTable = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/pendingTrans`);
+      const response = await axios.get(`https://sattajodileak.com/wallet/pendingTrans`);
       setTransactions(response.data.wallets);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -226,13 +226,13 @@ const DailyTransactionTable = () => {
     alert(`Making payment for phone ${phone} with amount ${amount}. and status${status}.`);
 
     // Update status to 1 (Success
-    await axios.get(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/getTrans`);
+    await axios.get(`https://sattajodileak.com/wallet/getTrans`);
     await updateStatus(phone, amount, status,id);
     
   }
   const updateStatus=async(phone, amount, status,id)=> {
     // Make a POST request to update the status
-    fetch(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/updateStatus`, {
+    fetch(`https://sattajodileak.com/wallet/updateStatus`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

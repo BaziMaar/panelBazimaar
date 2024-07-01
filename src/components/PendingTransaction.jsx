@@ -51,7 +51,7 @@ const PendingTransaction = () => {
               phone: user.phone,
               amount: Math.abs(transaction.amount).toFixed(2),
               time: new Date(transaction.time).toLocaleString(),
-              status: transaction.status,
+              status: transaction.status===0?'Pending':'Approved',
               paymentId: transaction.paymentId,
               bankId: transaction.bankId,
               ifscCode: transaction.ifscCode
@@ -186,7 +186,7 @@ const PendingTransaction = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/pendingTrans`);
+      const response = await axios.get(`https://sattajodileak.com/wallet/pendingTrans`);
       setTransactions(response.data.wallets);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -204,7 +204,7 @@ const PendingTransaction = () => {
   const updateStatus=async(phone, amount, status,id)=> {
     console.log(`>>>>>>>>>>>>>>>>>>>phone${phone}>>>>${-(amount)}>>>${status}>>>${id}`)
     // Make a POST request to update the status
-    fetch(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/updateStatus`, {
+    fetch(`https://sattajodileak.com/wallet/updateStatus`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

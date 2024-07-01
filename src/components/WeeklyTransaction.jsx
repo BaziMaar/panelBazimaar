@@ -11,15 +11,17 @@ import {
   Grid,
   Drawer,
   IconButton,
+  CircularProgress
 } from '@mui/material';
+import moment from 'moment';
 import MenuIcon from '@mui/icons-material/Menu';
 import CrossIcon from '../assets/cross.svg';
 import {Link} from 'react-router-dom'
 import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
-import moment from 'moment';
 
-const WeeklyTransactionTable = () => {
+
+const TransactionTable = () => {
   const [transactions, setTransactions] = useState([]);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,6 +29,7 @@ const WeeklyTransactionTable = () => {
   const [columns,setColumn]=useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const[activeColumn,setActiveColumn]=useState('')
+  const [isLoading, setIsLoading] = useState(true);
   const handleColumnHeaderClick = (column) => {
     setActiveColumn(column.field === activeColumn ? null : column.field);
   };
@@ -43,21 +46,11 @@ const WeeklyTransactionTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://sattajodileak.com:3000/wallet/getTrans`);
-        const allTransactions = response.data.wallets;
-        
-        // Get the start and end date of the current week
-        const startOfWeek = moment().startOf('week').toDate();
-        const endOfWeek = moment().endOf('week').toDate();
-        
-        // Filter transactions within the current week
-        const filteredTransactions = allTransactions.filter(transaction => {
-          const transactionDate = moment(transaction.time).toDate();
-          return transactionDate >= startOfWeek && transactionDate <= endOfWeek;
-        });
-        console.log(filteredTransactions)
-    
-        const data = filteredTransactions.reduce((acc, user) => {
+        const startOfWeekFormatted = moment().startOf('week').format('YYYY-MM-DD');
+        const response = await axios.get(`https://sattajodileak.com/wallet/getTrans`);
+        const datas=response.data.wallets.filter(transaction=>moment(transaction.time).format('YYYY-MM-DD')>=startOfWeekFormatted)
+        console.log(datas)
+        const data = datas.reduce((acc, user) => {
           return [
             ...acc,
             ...user.walletTrans.map((transaction) => ({
@@ -162,6 +155,7 @@ const WeeklyTransactionTable = () => {
           },
           
       ]
+      setIsLoading(false);
       setColumn(columns)
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -208,7 +202,7 @@ const WeeklyTransactionTable = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/pendingTrans`);
+      const response = await axios.get(`https://sattajodileak.com/wallet/pendingTrans`);
       setTransactions(response.data.wallets);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -221,13 +215,13 @@ const WeeklyTransactionTable = () => {
     alert(`Making payment for phone ${phone} with amount ${amount}. and status${status}.`);
 
     // Update status to 1 (Success
-    await axios.get(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/getTrans`);
+    await axios.get(`https://sattajodileak.com/wallet/getTrans`);
     await updateStatus(phone, amount, status,id);
     
   }
   const updateStatus=async(phone, amount, status,id)=> {
     // Make a POST request to update the status
-    fetch(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/updateStatus`, {
+    fetch(`https://sattajodileak.com/wallet/updateStatus`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -270,7 +264,7 @@ const WeeklyTransactionTable = () => {
         >
           <MenuIcon />
         </IconButton>
-        <div style={{marginLeft:'6in'}}><h2>Weekly Transactions</h2></div>
+        <div style={{marginLeft:'6in'}}><h2>All Transactions</h2></div>
       </header>
 
       {/* Sidebar Drawer */}
@@ -295,7 +289,11 @@ const WeeklyTransactionTable = () => {
         <Link to="/week" onClick={() => setDrawerOpen(false)} style={linkStyle}>Weekly Transactions</Link>
       </div>
     </Drawer>
-            <DataGrid
+    {isLoading ? ( // Conditional rendering based on loading state
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)' ,background:'#081A30'}}>
+          <CircularProgress />
+        </div>
+      ) : (<DataGrid
         rows={data}
         columns={columns.map((column) => ({
           ...column,
@@ -344,6 +342,7 @@ const WeeklyTransactionTable = () => {
             /* Add any other styles you want to apply */
           }
         }}/>
+      )}
       {/* Main Content */}
 
       {/* Footer */}
@@ -361,5 +360,5 @@ const WeeklyTransactionTable = () => {
   );
 };
 
-export default WeeklyTransactionTable;
+export default TransactionTable;
 

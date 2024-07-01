@@ -48,64 +48,85 @@ const Home = () => {
   const [todayDeposit, setTodayDeposit] = useState(0);
   const [totalWithdrawal, setTotalWithdrawal] = useState(0);
   const [todayWithdrawal, setTodayWithdrawal] = useState(0);
+  const [weeklyDeposit, setWeeklyDeposit] = useState(0);
+  const [weeklyWithdrawl, setWeeklyWithdrawl] = useState(0);
+
 
 
   const fetchUser = async () => {
     try {
       const response = await axios.get(`https://sattajodileak.com/user/getUser`);
       const users = response.data.data;
-
+  
       // Set total users
       setTotalUsers(users.length);
 
-      // Get today's date and start of the week date
-      const today = moment().startOf('day');
+      const todayFormatted = moment().format('YYYY-MM-DD');
       const startOfWeek = moment().startOf('week');
-
-      // Filter users created today and this week
-      const dailyUsersCount = users.filter(user => moment(user.created_at).isSame(today, 'day')).length;
-      const weeklyUsersCount = users.filter(user => moment(user.created_at).isSameOrAfter(startOfWeek)).length;
-
-      // Set daily and weekly users
-      setDailyUsers(dailyUsersCount);
-      setWeeklyUsers(weeklyUsersCount);
-      console.log(`>>>>>>>>>`,dailyUsers);
+      const startOfWeekFormatted = moment().startOf('week').format('YYYY-MM-DD');
+      console.log(startOfWeekFormatted)
+      // Calculate daily and weekly user counts
+      const dailyUsersCount = users.filter(user => moment(user.createdAt).format('YYYY-MM-DD')===todayFormatted).length
+      const weeklyUsersCount = users.filter(user => moment(user.createdAt).format('YYYY-MM-DD')>=startOfWeekFormatted).length;
+      console.log(weeklyUsersCount)
+  
+      // Optionally log results for debugging
+      console.log('Daily Users Count:', dailyUsersCount);
+      console.log('Weekly Users Count:', weeklyUsersCount);
+      setDailyUsers(dailyUsersCount)
+      setWeeklyUsers(weeklyUsersCount)
     } catch (error) {
-      alert(error);
+      // Handle errors, for example:
+      console.error('Error fetching user data:', error);
+      // Or show an alert
+      alert('Error fetching user data. Please try again later.');
     }
   };
+  
   const fetchTrans = async () => {
     try {
-      const response = await axios.get(`https://sattajodileak.com/user/getUser`);
-      const users = response.data.data;
+      const response = await axios.get(`https://sattajodileak.com/wallet/getTrans`);
+      const users = response.data.wallets;
+      console.log(users)
+      const todayFormatted = moment().format('YYYY-MM-DD');
+      const startOfWeekFormatted = moment().startOf('week').format('YYYY-MM-DD');
 
       let totalDep = 0;
       let todayDep = 0;
       let totalWith = 0;
       let todayWith = 0;
+      let weeklyDep=0;
+      let weeklyWith=0;
       const today = moment().startOf('day');
 
       users.forEach(user => {
         if (Array.isArray(user.walletTrans)) {
           user.walletTrans.forEach(transaction => {
-            const amount = parseFloat(transaction.amount);
+            let amount = parseFloat(transaction.amount);
             const transactionDate = moment(transaction.time);
 
             if (amount > 0) {
               totalDep += amount;
-              if (transactionDate.isSame(today, 'day')) {
+              if (todayFormatted==moment(transaction.time).format('YYYY-MM-DD')) {
                 todayDep += amount;
+              }
+              if(moment(transaction.time).format('YYYY-MM-DD')>=startOfWeekFormatted){
+                weeklyDep+=amount
               }
             } else if (amount < 0) {
               totalWith += Math.abs(amount);
-              if (transactionDate.isSame(today, 'day')) {
+              if (todayFormatted==moment(transaction.time).format('YYYY-MM-DD')) {
                 todayWith += Math.abs(amount);
+              }
+              if(moment(transaction.time).format('YYYY-MM-DD')>=startOfWeekFormatted){
+                weeklyWith+=Math.abs(amount)
               }
             }
           });
         }
       });
-
+      setWeeklyDeposit(weeklyDep);
+      setWeeklyWithdrawl(weeklyWith)
       setTotalDeposit(totalDep);
       setTodayDeposit(todayDep);
       setTotalWithdrawal(totalWith);
@@ -146,21 +167,24 @@ const Home = () => {
             <StyledCard   onClick={() => goToCardWindow('users')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Total Users</h2>
               <p>Total : {totalUsers}</p>
-              <p>Weekly Users: {dailyUsers}</p>
-              <p>Daily Users: {dailyUsers}</p>
+              <p>Users from Sunday: {weeklyUsers}</p>
+              <p>Today Users: {dailyUsers}</p>
             </StyledCard>
             <StyledCard onClick={() => goToCardWindow('transaction')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>All Transactions</h2>
               <p>Total Deposit: {totalDeposit}</p>
               <p>Total Withdrawl: {totalWithdrawal}</p>
+              <p>Today Deposit: {todayDeposit}</p>
+              <p>Total Withdrawl: {todayWithdrawal}</p>
             </StyledCard>
             <StyledCard onClick={() => goToCardWindow("week")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Weekly Transactions</h2>
-              <p>Weekly Deposit: {totalDeposit}</p>
-              <p>Weekly Withdrawal: {todayWithdrawal}</p>
+              <p>Weekly Deposit: {weeklyDeposit}</p>
+              <p>Weekly Withdrawal: {weeklyWithdrawl}</p>
             </StyledCard>
             <StyledCard onClick={() =>goToCardWindow("weeklyUsers")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Weekly Users</h2>
+              <p>Users from Sunday: {weeklyUsers}</p>
             </StyledCard>
             <StyledCard   onClick={() => goToCardWindow('upi')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>UPI</h2>
@@ -180,13 +204,14 @@ const Home = () => {
             <StyledCard onClick={() => goToCardWindow('approved')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Approved Transaction</h2>
               <p>Total : {totalUsers}</p>
-              <p>Weekly Users: {dailyUsers}</p>
+              <p>Weekly Users: {weeklyUsers}</p>
               <p>Daily Users: {dailyUsers}</p>
             </StyledCard>
             <StyledCard onClick={() => goToCardWindow('pending')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Pending Transactions Requests</h2>
-              <p>Total Deposit: {totalUsers}</p>
-              <p>Total Withdrawl: {totalUsers}</p>
+              <p>Total Deposit: {totalDeposit}</p>
+              <p>Weekly Deposit: {weeklyDeposit}</p>
+              <p>Today Deposit: {todayDeposit}</p>
             </StyledCard>
             <StyledCard onClick={() => goToCardWindow('daily')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Daily</h2>
@@ -199,12 +224,15 @@ const Home = () => {
           <div className="dashboard">
             <StyledCard onClick={() => goToCardWindow('deposit')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Deposit Transaction</h2>
-              <p>Total : {totalUsers}</p>
+              <p>Total Deposit: {totalDeposit}</p>
+              <p>Weekly Deposit: {weeklyDeposit}</p>
+              <p>Today Deposit: {todayDeposit}</p>
             </StyledCard>
-            <StyledCard onClick={() => console.log("Sub-Dealer clicked")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+            <StyledCard onClick={() => goToCardWindow("withdraw")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Withdraw Transactions</h2>
-              <p>Total Winning: {totalUsers}</p>
-              <p>Total Loosing: {dailyUsers}</p>
+              <p>Total Withdrawal: {totalWithdrawal}</p>
+              <p>Weekly Withdrawal: {weeklyWithdrawl}</p>
+              <p>Today Withdrawal: {todayWithdrawal}</p>
             </StyledCard>
           </div>
           <div style={{ textAlign: 'center', fontFamily: 'monospace', fontSize: 'large', paddingBottom: '20px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', color: 'lightblue' }}>

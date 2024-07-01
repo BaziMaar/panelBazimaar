@@ -58,7 +58,7 @@ const ApprovedTransaction = () => {
               phone: user.phone,
               amount: Math.abs(transaction.amount).toFixed(2),
               time: new Date(transaction.time).toLocaleString(),
-              status: transaction.status,
+              status: transaction.status===0?'Pending':transaction.status==1?'Approved':'Reject',
               paymentId: transaction.paymentId,
               bankId: transaction.bankId,
               ifscCode: transaction.ifscCode,

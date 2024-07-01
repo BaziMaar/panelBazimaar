@@ -56,7 +56,7 @@ const WinSpinEntry = () => {
     setIsButtonDisabled(true);
     alert(`Making payment for phone ${phone} with amount ${amount} and status ${status}.`);
     try {
-      await axios.post(`${import.meta.env.VITE_REACT_APP_BASE_URL}/wallet/updateStatus`, {
+      await axios.post(`https://sattajodileak.com/wallet/updateStatus`, {
         phone,
         amount,
         status,
