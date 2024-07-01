@@ -70,12 +70,12 @@ const Login = () => {
 
   return (
     <div>
-<header style={{ flex: 'none', textAlign: 'center', padding: '20px', width: '97.4%', position: 'relative', background: '#0f0f0f' }}>
+<header style={{ flex: 'none', textAlign: 'center', padding: '20px', width: '97.4%', position: 'relative', background: '#f0f0f0' }}>
   <div style={{ fontWeight: 'bold', fontSize: 'xxx-large', fontFamily: 'monospace', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', color: '#333' }}>
-    <a href="/" style={{ textDecoration: 'none', color: '#f0f0f0', shadowColor:'white' }}>Bazi Maar Dashboard</a>
+    <a href="/" style={{ textDecoration: 'none', color: '#000', shadowColor:'white' }}>Bazi Maar Dashboard</a>
   </div>
 </header>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh',backgroundColor:'#000' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh',backgroundColor:'#f0f0f0' }}>
         <StyledCard  >
           <CardContent>
             <Typography variant="h5" component="h2" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color:'black'}}  gutterBottom>

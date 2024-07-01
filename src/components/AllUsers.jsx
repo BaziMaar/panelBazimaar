@@ -50,7 +50,7 @@ const AllUsers = () => {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://ajayluckybrust.today/user/getUser`);
+        const response = await axios.get(`https://sattajodileak.com/user/getUser`);
         setTransactions(response.data.data);
 
         const formattedData = response.data.data.map((transaction) => ({
@@ -62,7 +62,7 @@ const AllUsers = () => {
           withdrawal_amount: Math.abs(transaction.withdrwarl_amount).toFixed(2),
           referred_wallet: Math.abs(transaction.referred_wallet).toFixed(2),
           created_at: moment(transaction.createdAt).format('YYYY-MM-DD'),
-          referred_users: transaction.refer_id,
+          referred_users: (transaction.refer_id).length,
         }));
 
         setData(formattedData);
@@ -70,12 +70,13 @@ const AllUsers = () => {
         const tableColumns = [
           { field: 'name', headerName: 'Name', width: 200 },
           { field: 'phone', headerName: 'Phone', width: 220 },
-          { field: 'email', headerName: 'Email', width: 220 },
-          { field: 'wallet', headerName: 'Wallet', width: 180 },
+          { field: 'email', headerName: 'Email', width: 250 },
+          { field: 'wallet', headerName: 'Current Wallet Amount', width: 180 },
           { field: 'withdrawal_amount', headerName: 'Withdrawal Amount', width: 220 },
-          { field: 'referred_wallet', headerName: 'Referred Wallet', width: 220 },
+          
           { field: 'created_at', headerName: 'Created At', width: 180 },
-          { field: 'referred_users', headerName: 'Referred Users', width: 200 },
+          { field: 'referred_wallet', headerName: 'Referred Wallet', width: 220 },
+          { field: 'referred_users', headerName: 'Total Refers', width: 200 },
           {
             field: 'actions',
             headerName: 'Actions',
@@ -93,6 +94,16 @@ const AllUsers = () => {
             renderCell: (params) => (
               <Button variant="contained" size="small" onClick={() => handlePayment(params.row.phone)}>
                 Transactions
+              </Button>
+            ),
+          },
+          {
+            field: 'refer',
+            headerName: 'Refer Details',
+            width: 150,
+            renderCell: (params) => (
+              <Button variant="contained" size="small" onClick={() => handleRefer(params.row.phone)}>
+                Refer Details
               </Button>
             ),
           },
@@ -177,6 +188,9 @@ const AllUsers = () => {
   const handlePayment = (phone) => {
     window.open(`/history/${phone}`, '_blank');
   };
+  const handleRefer = (phone) => {
+    window.open(`/referred/${phone}`, '_blank');
+  };
 
   const handleOpenModal = (phone) => {
     setOpenModal(true);
@@ -209,13 +223,13 @@ const AllUsers = () => {
       let requestData;
 
       if (addMoney !== null) {
-        apiEndpoint = `https://ajayluckybrust.today/wallet/adminDeposit`;
+        apiEndpoint = `https://sattajodileak.com/wallet/adminDeposit`;
         requestData = {
           phone,
           amount: addMoney,
         };
       } else if (deductMoney !== null) {
-        apiEndpoint = `https://ajayluckybrust.today/wallet/adminWithdraw`;
+        apiEndpoint = `https://sattajodileak.com/wallet/adminWithdraw`;
         requestData = {
           phone,
           amount: deductMoney,
