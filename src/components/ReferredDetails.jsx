@@ -17,39 +17,43 @@ const ReferredDetails = () => {
   const [winAmount, setWinningAmount] = useState(0);
   const [looseAmount, setLosingAmount] = useState(0);
   const [refAmount, setRefAmount] = useState(0);
-  let [columns, setColumns] = useState([]);
-  const [groupedTransactions, setGroupedTransactions] = useState({});
+  const [groupedTransactions, setGroupedTransactions] = useState([]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(`https://sattajodileak.com/wallet/getReferred?phone=${phone}`);
       const transactions = response.data.referred;
-      console.log(transactions)
+      console.log(transactions);
 
       const grouped = transactions.reduce((acc, transaction) => {
         const userId = transaction.user_id;
         if (!acc[userId]) {
-          acc[userId] = [];
+          acc[userId] = {
+            user_id: userId,
+            totalAmount: 0,
+            totalDeposit: 0,
+            totalWithdraw: 0,
+            avatar: transaction.avatar,
+            date: moment(transaction.createdAt).format('YYYY-MM-DD'),
+            time: moment(transaction.createdAt).format('HH:mm:ss')
+          };
         }
-        acc[userId].push(transaction);
+        acc[userId].totalAmount += transaction.amount;
+        acc[userId].totalDeposit += transaction.deposit_amount || 0;
+        acc[userId].totalWithdraw += transaction.withdraw_amount || 0;
         return acc;
       }, {});
 
-      const refAmount = transactions
-      .filter(transaction => transaction.amount > 0)
-      .reduce((acc, transaction) => acc + transaction.amount, 0);
-      setRefAmount(refAmount.toFixed(2));
-      
-      const winAmount = transactions
-        .filter(transaction => transaction.deposit_amount > 0)
-        .reduce((acc, transaction) => acc + transaction.deposit_amount, 0);
+      const aggregatedTransactions = Object.values(grouped);
 
-      const looseAmount = transactions
-        .filter(transaction => transaction.withdraw_amount < 0)
-        .reduce((acc, transaction) => acc + transaction.withdraw_amount, 0);
+      const refAmount = aggregatedTransactions.reduce((acc, transaction) => acc + transaction.totalAmount, 0);
+      setRefAmount(refAmount.toFixed(2));
+
+      const winAmount = aggregatedTransactions.reduce((acc, transaction) => acc + transaction.totalDeposit, 0);
+      const looseAmount = aggregatedTransactions.reduce((acc, transaction) => acc + transaction.totalWithdraw, 0);
 
       setTransactions(transactions);
-      setGroupedTransactions(grouped);
+      setGroupedTransactions(aggregatedTransactions);
       setWinningAmount(winAmount);
       setLosingAmount(looseAmount);
     } catch (error) {
@@ -71,15 +75,13 @@ const ReferredDetails = () => {
     setDrawerOpen(open);
   };
 
-  columns = [
-    { field: 'user_id', headerName: 'User ID', width: 150 },
-    { field: 'amount', headerName: 'Amount', width: 150 },
-    { field: 'avatar', headerName: 'Avatar', width: 150 },
-    { field: 'date', headerName: 'Date', width: 150 },
-    { field: 'time', headerName: 'Time', width: 150 },
-    { field: 'type', headerName: 'Type', width: 150 },
-    {field:'deposit_amount',headerName:'Deposit Amount',width:150},
-    {field:'withdraw_amount',headerName:'Withdraw Amount',width:150},
+  const columns = [
+    { field: 'user_id', headerName: 'User ID', width: 300 },
+    { field: 'totalAmount', headerName: 'Total Earn by Refer', width: 300 },
+    { field: 'totalDeposit', headerName: 'Total Deposit', width: 300 },
+    { field: 'totalWithdraw', headerName: 'Total Withdraw', width: 300 },
+    { field: 'date', headerName: 'Date', width: 300 },
+    { field: 'time', headerName: 'Time', width: 300 }
   ];
 
   const linkStyle = {
@@ -173,39 +175,31 @@ const ReferredDetails = () => {
 
       {/* Main Content */}
       <div>
-        {Object.keys(groupedTransactions).map((userId) => (
-          <div key={userId} style={{ marginBottom: '20px' }}>
-            <Typography variant="h6" component="div" style={{ margin: '10px 0' }}>
-              User ID: {userId}
-            </Typography>
-            <DataGrid
-              rows={groupedTransactions[userId].map(transaction => ({
-                id: transaction._id,
-                user_id: transaction.user_id,
-                amount: transaction.amount.toFixed(2),
-                avatar: transaction.avatar,
-                date: moment(transaction.createdAt).format('YYYY-MM-DD'),
-                time: moment(transaction.createdAt).format('HH:mm:ss'),
-                type: transaction.amount > 0 ? 'Deposit' : 'Withdraw',
-                deposit_amount:transaction?.deposit_amount>0?transaction?.deposit_amount:0,
-                withdraw_amount:transaction?.withdraw_amount>0?transaction?.withdraw_amount:0
-              }))}
-              columns={columns}
-              pageSizeOptions={[5, 10, 15, 20, 25, 50, 100]}
-              getRowSpacing={(params) => ({
-                top: params.isFirstVisible ? 0 : 5,
-                bottom: params.isLastVisible ? 0 : 5,
-              })}
-              sx={{
-                '&.MuiDataGrid-root': {
-                  bgcolor: '#DADADA',
-                  color: 'black',
-                  borderColor: 'transparent',
-                },
-              }}
-            />
-          </div>
-        ))}
+        <DataGrid
+          rows={groupedTransactions.map(transaction => ({
+            id: transaction.user_id,
+            user_id: transaction.user_id,
+            totalAmount: transaction.totalAmount.toFixed(2),
+            totalDeposit: transaction.totalDeposit.toFixed(2),
+            totalWithdraw: transaction.totalWithdraw.toFixed(2),
+            avatar: transaction.avatar,
+            date: transaction.date,
+            time: transaction.time,
+          }))}
+          columns={columns}
+          pageSizeOptions={[5, 10, 15, 20, 25, 50, 100]}
+          getRowSpacing={(params) => ({
+            top: params.isFirstVisible ? 0 : 5,
+            bottom: params.isLastVisible ? 0 : 5,
+          })}
+          sx={{
+            '&.MuiDataGrid-root': {
+              bgcolor: '#DADADA',
+              color: 'black',
+              borderColor: 'transparent',
+            },
+          }}
+        />
       </div>
 
       <footer style={{ textAlign: 'center', padding: '10px', color: '#99E9FA', background: '#DADADA' }}>
