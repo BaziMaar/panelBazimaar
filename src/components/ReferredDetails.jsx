@@ -176,7 +176,7 @@ const ReferredDetails = () => {
       {/* Main Content */}
       <div>
         <DataGrid
-          rows={groupedTransactions.map(transaction => ({
+          rows={groupedTransactions.filter(transaction => transaction.totalAmount > 0).map(transaction => ({
             id: transaction.user_id,
             user_id: transaction.user_id,
             totalAmount: transaction.totalAmount.toFixed(2),

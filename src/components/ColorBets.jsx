@@ -43,7 +43,7 @@ const ColorBets = () => {
         amount: transaction.amount,
         date: moment(transaction.createdAt).format('YYYY-MM-DD'),
         time: moment(transaction.createdAt).format('HH:mm:ss'),
-        type: transaction.amount > 0 ? 'Deposit' : 'Withdraw',
+        type: transaction.amount > 0 ? 'Win ' : 'Loose',
       }));
 
       const columns = [

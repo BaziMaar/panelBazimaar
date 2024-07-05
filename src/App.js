@@ -33,6 +33,7 @@ import AviatorBets from './components/AviatorBets';
 import DragonBets from './components/DragonBets';
 import LuckyBets from './components/LuckyBets';
 import ColorBets from './components/ColorBets';
+import MinesBets from './components/MinesBets';
 function App() {
   return (
         <Router>
@@ -69,6 +70,7 @@ function App() {
         <Route path="/luckyBets/:phone" element={<LuckyBets/>}/>
         <Route path="/dragonBets/:phone" element={<DragonBets/>}/>
         <Route path="/colorBets/:phone" element={<ColorBets/>}/>
+        <Route path="/minesBets/:phone" element={<MinesBets/>}/>
         
       </Routes>
     </Router>

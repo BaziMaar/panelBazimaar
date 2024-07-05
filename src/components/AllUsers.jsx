@@ -132,7 +132,7 @@ const AllUsers = () => {
             headerName: 'Color Raja Bet',
             width: 150,
             renderCell: (params) => (
-              <Button variant="contained" size="small" onClick={() => handleBet(params.row.phone)}>
+              <Button variant="contained" size="small" onClick={() => handleColorBet(params.row.phone)}>
                 Bet
               </Button>
             ),
@@ -142,7 +142,7 @@ const AllUsers = () => {
             headerName: 'Mines Bet',
             width: 150,
             renderCell: (params) => (
-              <Button variant="contained" size="small" onClick={() => handleBet(params.row.phone)}>
+              <Button variant="contained" size="small" onClick={() => handleMinesBet(params.row.phone)}>
                 Bet
               </Button>
             ),
@@ -183,6 +183,9 @@ const AllUsers = () => {
 
   const handleColorBet = (phone) => {
     window.open(`/colorBets/${phone}`, '_blank');
+  };
+  const handleMinesBet = (phone) => {
+    window.open(`/minesBets/${phone}`, '_blank');
   };
 
   const handlePayment = (phone) => {
