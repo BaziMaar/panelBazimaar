@@ -57,7 +57,6 @@ const DepositTable = () => {
                 amount: Math.abs(transaction.amount).toFixed(2),
                 amount_status: 'Deposit',
                 time: new Date(transaction.time).toLocaleString(),
-                status: transaction.status === 0 ? 'Pending' : transaction.status == 1 ? 'Approved' : 'Reject',
                 paymentId: transaction.paymentId,
                 bankId: transaction.bankId,
                 ifscCode: transaction.ifscCode,
@@ -92,12 +91,6 @@ const DepositTable = () => {
             "field":"time",
             "headerName":"Time",
             width:500,
-            cellClassName:'property'
-          },
-          {
-            "field":"status",
-            "headerName":"Status",
-            width:300,
             cellClassName:'property'
           }
           
