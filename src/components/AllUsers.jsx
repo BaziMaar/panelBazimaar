@@ -39,6 +39,8 @@ const AllUsers = () => {
   const [deductMoney, setDeductMoney] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchInput, setSearchInput] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -50,7 +52,7 @@ const AllUsers = () => {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://sattajodileak.com/user/getUser`);
+        const response = await axios.get(`https://sattajodileak.com/user/getUser?page=${page}&limit=100`);
         setTransactions(response.data.data);
 
         const formattedData = response.data.data.map((transaction) => ({
@@ -66,14 +68,14 @@ const AllUsers = () => {
         }));
 
         setData(formattedData);
+        setTotalPages(response.data.totalPages);
 
         const tableColumns = [
           { field: 'name', headerName: 'Name', width: 200 },
           { field: 'phone', headerName: 'Phone', width: 220 },
           { field: 'email', headerName: 'Email', width: 250 },
-          { field: 'wallet', headerName: 'Current Wallet Amount', width: 180,type:'number' },
-          { field: 'withdrawal_amount', headerName: 'Withdrawal Amount', width: 220 ,type:Number},
-          
+          { field: 'wallet', headerName: 'Current Wallet Amount', width: 180, type: 'number' },
+          { field: 'withdrawal_amount', headerName: 'Withdrawal Amount', width: 220, type: 'number' },
           { field: 'created_at', headerName: 'Created At', width: 180 },
           { field: 'referred_wallet', headerName: 'Referred Wallet', width: 220 },
           { field: 'referred_users', headerName: 'Total Refers', width: 200 },
@@ -167,7 +169,7 @@ const AllUsers = () => {
     };
 
     fetchData();
-  }, []);
+  }, [page]);
 
   const handleBet = (phone) => {
     window.open(`/aviatorBets/${phone}`, '_blank');
@@ -368,8 +370,33 @@ const AllUsers = () => {
             rows={filteredData}
             columns={columns}
             pageSize={10}
-            rowsPerPageOptions={[5, 10, 20]}
+            rowsPerPageOptions={[10, 20, 50]}
+            pagination
+            page={page - 1} // DataGrid uses zero-based index
+            onPageChange={(newPage) => setPage(newPage + 1)}
           />
+                    <Button           onClick={() => {
+            setPage(page-1)
+          }}           style={{
+            backgroundColor: 'blue',
+            color: 'white',
+            borderRadius: '20px',
+            padding: '8px 16px',
+            fontWeight: 'bold',
+            marginRight:'10px',
+            marginTop:'1%'
+          }}>Previous Page {page-1}</Button>
+          <Button           onClick={() => {
+            setPage(page+1)
+          }}           style={{
+            backgroundColor: 'blue',
+            color: 'white',
+            borderRadius: '20px',
+            padding: '8px 16px',
+            fontWeight: 'bold',
+            marginRight:'10px',
+            marginLeft:'92%',
+          }}>Next Page {page+1}</Button>
         </div>
       )}
 

@@ -56,25 +56,25 @@ const Home = () => {
   const fetchUser = async () => {
     try {
       const response = await axios.get(`https://sattajodileak.com/user/getUser`);
-      const users = response.data.data;
+      const users = response.data.total;
   
       // Set total users
-      setTotalUsers(users.length);
+      setTotalUsers(users);
 
-      const todayFormatted = moment().format('YYYY-MM-DD');
-      const startOfWeek = moment().startOf('week');
-      const startOfWeekFormatted = moment().startOf('week').format('YYYY-MM-DD');
-      console.log(startOfWeekFormatted)
-      // Calculate daily and weekly user counts
-      const dailyUsersCount = users.filter(user => moment(user.createdAt).format('YYYY-MM-DD')===todayFormatted).length
-      const weeklyUsersCount = users.filter(user => moment(user.createdAt).format('YYYY-MM-DD')>=startOfWeekFormatted).length;
-      console.log(weeklyUsersCount)
+      // const todayFormatted = moment().format('YYYY-MM-DD');
+      // const startOfWeek = moment().startOf('week');
+      // const startOfWeekFormatted = moment().startOf('week').format('YYYY-MM-DD');
+      // console.log(startOfWeekFormatted)
+      // // Calculate daily and weekly user counts
+      // const dailyUsersCount = users.filter(user => moment(user.createdAt).format('YYYY-MM-DD')===todayFormatted).length
+      // const weeklyUsersCount = users.filter(user => moment(user.createdAt).format('YYYY-MM-DD')>=startOfWeekFormatted).length;
+      // console.log(weeklyUsersCount)
   
       // Optionally log results for debugging
-      console.log('Daily Users Count:', dailyUsersCount);
-      console.log('Weekly Users Count:', weeklyUsersCount);
-      setDailyUsers(dailyUsersCount)
-      setWeeklyUsers(weeklyUsersCount)
+      // console.log('Daily Users Count:', dailyUsersCount);
+      // console.log('Weekly Users Count:', weeklyUsersCount);
+      setDailyUsers(users)
+      setWeeklyUsers(users)
     } catch (error) {
       // Handle errors, for example:
       console.error('Error fetching user data:', error);
