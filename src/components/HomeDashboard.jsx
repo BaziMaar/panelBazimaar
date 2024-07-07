@@ -107,18 +107,18 @@ const Home = () => {
 
             if (amount > 0) {
               totalDep += amount;
-              if (todayFormatted==moment(transaction.time).format('YYYY-MM-DD')) {
+              if (todayFormatted==moment(transaction.time).format('YYYY-MM-DD')&&transaction.status===0&&transaction.status===1) {
                 todayDep += amount;
               }
-              if(moment(transaction.time).format('YYYY-MM-DD')>=startOfWeekFormatted){
+              if(moment(transaction.time).format('YYYY-MM-DD')>=startOfWeekFormatted&&transaction.status===0&&transaction.status===1){
                 weeklyDep+=amount
               }
             } else if (amount < 0) {
               totalWith += Math.abs(amount);
-              if (todayFormatted==moment(transaction.time).format('YYYY-MM-DD')) {
+              if (todayFormatted==moment(transaction.time).format('YYYY-MM-DD')&&transaction.status===0&&transaction.status===1) {
                 todayWith += Math.abs(amount);
               }
-              if(moment(transaction.time).format('YYYY-MM-DD')>=startOfWeekFormatted){
+              if(moment(transaction.time).format('YYYY-MM-DD')>=startOfWeekFormatted&&transaction.status===0&&transaction.status===1){
                 weeklyWith+=Math.abs(amount)
               }
             }
