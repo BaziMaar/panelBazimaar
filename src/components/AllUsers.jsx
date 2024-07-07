@@ -71,8 +71,8 @@ const AllUsers = () => {
           { field: 'name', headerName: 'Name', width: 200 },
           { field: 'phone', headerName: 'Phone', width: 220 },
           { field: 'email', headerName: 'Email', width: 250 },
-          { field: 'wallet', headerName: 'Current Wallet Amount', width: 180 },
-          { field: 'withdrawal_amount', headerName: 'Withdrawal Amount', width: 220 },
+          { field: 'wallet', headerName: 'Current Wallet Amount', width: 180,type:'number' },
+          { field: 'withdrawal_amount', headerName: 'Withdrawal Amount', width: 220 ,type:Number},
           
           { field: 'created_at', headerName: 'Created At', width: 180 },
           { field: 'referred_wallet', headerName: 'Referred Wallet', width: 220 },
