@@ -268,6 +268,29 @@ const AllUsers = () => {
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
   };
+  const fetchSearchData = async () => {
+    if (searchInput === '') {
+      return;
+    }
+    try {
+      const response = await axios.get(`https://sattajodileak.com/user/getUser?search=${searchInput}`);
+      const formattedData = response.data.data.map((transaction) => ({
+        id: transaction._id,
+        name: transaction.name,
+        phone: transaction.phone,
+        email: transaction.email,
+        wallet: transaction.wallet.toFixed(2),
+        withdrawal_amount: Math.abs(transaction.withdrwarl_amount).toFixed(2),
+        referred_wallet: Math.abs(transaction.referred_wallet).toFixed(2),
+        created_at: moment(transaction.createdAt).format('YYYY-MM-DD'),
+        referred_users: (transaction.refer_id).length,
+      }));
+      setData(formattedData);
+      console.log(formattedData)
+    } catch (error) {
+      console.error('Error searching data:', error);
+    }
+  };
 
   const filteredData = data.filter((item) =>
     item.name.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -357,6 +380,16 @@ const AllUsers = () => {
           onChange={handleSearchInputChange}
           style={{ marginBottom: '20px', width: '100%', background: '#fff', color: 'black' }}
         />
+        <Button onClick={fetchSearchData}
+          style={{
+            backgroundColor: 'blue',
+            color: 'white',
+            borderRadius: '20px',
+            padding: '8px 16px',
+            fontWeight: 'bold',
+            marginRight:'10px',
+            marginTop:'1%'
+          }}>Search </Button>
       </div>
 
       {isLoading ? (
