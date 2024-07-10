@@ -56,7 +56,18 @@ const CardContainer = ({ eventData, secondEvent }) => {
           deviceId:"1234"
         });
         console.log(response.data)
-
+        }
+        else{
+          let response = await axios.post('https://sattajodileak.com/color/sendColorMoney', {
+            phone: 123456789,
+            number: i,
+            color: -1,
+            size: -1,
+            amount: 10,
+            globalNumber: secondEvent.globalNumber,
+            deviceId:"1234"
+          });
+          console.log(response.data)
         }
       }
     } catch (error) {
