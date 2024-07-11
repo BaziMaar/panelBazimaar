@@ -279,10 +279,10 @@ const AllUsers = () => {
 
   const handleBlockSubmit = async () => {
     try {
-      const blockApiEndpoint = `http://74.225.252.59:3000/user/blockUser`;
-      const user=await axios.get(`http://74.225.252.59:3000/user/getUser?search=${phone}`)
+      const blockApiEndpoint = `https://sattajodileak.com/user/blockUser`;
+      const user=await axios.get(`https://sattajodileak.com/user/getUser?search=${phone}`)
       const token=user.data.data[0].token
-      const notifyApiEndpoint = `http://74.225.252.59:3000/notification/send`;
+      const notifyApiEndpoint = `https://sattajodileak.com/notification/send`;
       const blockData = {
         phone:phone
       };

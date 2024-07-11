@@ -210,7 +210,7 @@ const TransactionTable = () => {
 
     const userDetails = await axios.get(`https://sattajodileak.com/user/getUser?search=${phone}`);
     const token=userDetails.data.data[0].token;
-      const notifyApiEndpoint = `http://74.225.252.59:3000/notification/send`;
+      const notifyApiEndpoint = `https://sattajodileak.com/notification/send`;
       const notifyData = {
         title:"Withdrawl Rejected from Bazimaar",
         token:token,
