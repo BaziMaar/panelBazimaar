@@ -34,6 +34,7 @@ const AllUsers = () => {
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openBlock, setOpenBlock] = useState(false);
   const [phone, setPhone] = useState('');
   const [addMoney, setAddMoney] = useState(null);
   const [deductMoney, setDeductMoney] = useState(null);
@@ -41,6 +42,7 @@ const AllUsers = () => {
   const [searchInput, setSearchInput] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -86,6 +88,16 @@ const AllUsers = () => {
             renderCell: (params) => (
               <Button variant="contained" size="small" onClick={() => handleOpenModal(params.row.phone)}>
                 Action
+              </Button>
+            ),
+          },
+          {
+            field: 'block',
+            headerName: 'Block User',
+            width: 200,
+            renderCell: (params) => (
+              <Button variant="contained" size="small" onClick={() => handleOpenBlock(params.row.phone)}>
+                Block User
               </Button>
             ),
           },
@@ -201,6 +213,15 @@ const AllUsers = () => {
     setOpenModal(true);
     setPhone(phone);
   };
+  const handleOpenBlock = (phone) => {
+    setOpenBlock(true);
+    setPhone(phone);
+  };
+  const handleCloseBlock = (phone) => {
+    setOpenBlock(false);
+    setPhone(phone);
+    setMessage('')
+  };
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -216,6 +237,10 @@ const AllUsers = () => {
   const handleDeductMoneyChange = (event) => {
     const value = event.target.value;
     setDeductMoney(value !== '' ? parseInt(value, 10) : null);
+  };
+  const handleBlockMessage = (event) => {
+    const value = event.target.value;
+    setMessage(value);
   };
 
   const toggleDrawer = (open) => () => {
@@ -249,6 +274,32 @@ const AllUsers = () => {
       handleCloseModal();
     } catch (error) {
       console.error('Error submitting form:', error);
+    }
+  };
+
+  const handleBlockSubmit = async () => {
+    try {
+      const blockApiEndpoint = `http://74.225.252.59:3000/user/blockUser`;
+      const user=await axios.get(`http://74.225.252.59:3000/user/getUser?search=${phone}`)
+      const token=user.data.data[0].token
+      const notifyApiEndpoint = `http://74.225.252.59:3000/notification/send`;
+      const blockData = {
+        phone:phone
+      };
+      const notifyData = {
+        token:token,
+        title:'Blocked User by Bazimaar',
+        body:message
+      };
+      const blockResponse = await axios.post(blockApiEndpoint, blockData);
+      console.log(blockResponse.data);
+
+      const notifyResponse = await axios.post(notifyApiEndpoint, notifyData);
+      console.log(notifyResponse.data);
+
+      handleCloseBlock();
+    } catch (error) {
+      console.error('Error blocking user or sending notification:', error);
     }
   };
 
@@ -286,7 +337,7 @@ const AllUsers = () => {
         referred_users: (transaction.refer_id).length,
       }));
       setData(formattedData);
-      console.log(formattedData)
+      console.log(formattedData);
     } catch (error) {
       console.error('Error searching data:', error);
     }
@@ -380,16 +431,20 @@ const AllUsers = () => {
           onChange={handleSearchInputChange}
           style={{ marginBottom: '20px', width: '100%', background: '#fff', color: 'black' }}
         />
-        <Button onClick={fetchSearchData}
+        <Button
+          onClick={fetchSearchData}
           style={{
             backgroundColor: 'blue',
             color: 'white',
             borderRadius: '20px',
             padding: '8px 16px',
             fontWeight: 'bold',
-            marginRight:'10px',
-            marginTop:'1%'
-          }}>Search </Button>
+            marginRight: '10px',
+            marginTop: '1%',
+          }}
+        >
+          Search
+        </Button>
       </div>
 
       {isLoading ? (
@@ -408,28 +463,38 @@ const AllUsers = () => {
             page={page - 1} // DataGrid uses zero-based index
             onPageChange={(newPage) => setPage(newPage + 1)}
           />
-                    <Button           onClick={() => {
-            setPage(page-1)
-          }}           style={{
-            backgroundColor: 'blue',
-            color: 'white',
-            borderRadius: '20px',
-            padding: '8px 16px',
-            fontWeight: 'bold',
-            marginRight:'10px',
-            marginTop:'1%'
-          }}>Previous Page {page-1}</Button>
-          <Button           onClick={() => {
-            setPage(page+1)
-          }}           style={{
-            backgroundColor: 'blue',
-            color: 'white',
-            borderRadius: '20px',
-            padding: '8px 16px',
-            fontWeight: 'bold',
-            marginRight:'10px',
-            marginLeft:'92%',
-          }}>Next Page {page+1}</Button>
+          <Button
+            onClick={() => {
+              setPage(page - 1);
+            }}
+            style={{
+              backgroundColor: 'blue',
+              color: 'white',
+              borderRadius: '20px',
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              marginRight: '10px',
+              marginTop: '1%',
+            }}
+          >
+            Previous Page {page - 1}
+          </Button>
+          <Button
+            onClick={() => {
+              setPage(page + 1);
+            }}
+            style={{
+              backgroundColor: 'blue',
+              color: 'white',
+              borderRadius: '20px',
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              marginRight: '10px',
+              marginLeft: '92%',
+            }}
+          >
+            Next Page {page + 1}
+          </Button>
         </div>
       )}
 
@@ -468,6 +533,23 @@ const AllUsers = () => {
         <DialogActions>
           <Button onClick={handleCloseModal}>Cancel</Button>
           <Button onClick={handleSubmit} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openBlock} onClose={handleCloseBlock} style={{ background: '#081A30', color: 'lightblue' }}>
+        <DialogTitle>Block User</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Block Message"
+            value={message}
+            onChange={handleBlockMessage}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseBlock}>Cancel</Button>
+          <Button onClick={handleBlockSubmit} color="primary">
             Submit
           </Button>
         </DialogActions>
