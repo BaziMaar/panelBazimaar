@@ -130,7 +130,7 @@ const CardContainer = ({ eventData, secondEvent }) => {
           <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(135, 206, 235, 0.3), rgba(70, 130, 180, 0.7))' }}>
             <CardContent>
               <h3 style={{ color: '#4682b4' }}>Small Number</h3>
-              <p>Total Amount Bet Placed: {small / 2}.</p>
+              <p style={{color:'#fff'}}>Total Amount Bet Placed: {small / 2}.</p>
             </CardContent>
           </Card>
           <Card style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(173, 216, 230, 0.3), rgba(0, 191, 255, 0.7))' }}>
@@ -147,8 +147,8 @@ const CardContainer = ({ eventData, secondEvent }) => {
               {[zero, one, two, three, four, five, six, seven, eight, nine].map((amount, index) => (
                 <Card key={index} onClick={() => handleCardClick(index)}style={{ ...cardStyle, width: '200px', margin: '10px', background: getBackgroundColor(index,index) }}>
                   <CardContent>
-                    <h3 style={{ color: 'black', fontSize: '16px', marginBottom: '10px' }}>{['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'][index]}</h3>
-                    <p style={{ color: '#333', fontSize: '14px', marginBottom: '0' }}>{amount / 9}</p>
+                    <h3 style={{ color: '#fff', fontSize: '16px', marginBottom: '10px' }}>{['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'][index]}</h3>
+                    <p style={{ color: '#fff',fontWeight:'bold', fontSize: '14px', marginBottom: '0' }}>{amount / 9}</p>
                   </CardContent>
                 </Card>
               ))}

@@ -126,8 +126,7 @@ const TransactionTable = () => {
                   variant="contained"
                   size="small"
                   onClick={() => handlePayment(params.row.phone, params.row.amount, 1, params.row.key)}
-                  disabled={isButtonDisabled||params.row.status==1||params.row.status===2}
-                  
+                  disabled={isButtonDisabled||params.row.status==1||params.row.status===2} 
                 >
                   Accept
                 </Button>
@@ -213,6 +212,9 @@ const TransactionTable = () => {
 
     // Update status to 1 (Success
     await axios.get(`https://sattajodileak.com/wallet/getTrans`);
+    const userDetails=await axios.get(`https://sattajodileak.com/user/getUser?phone=${phone}`)
+    console.log(userDetails)
+
     await updateStatus(phone, amount, status,id);
     
   }
