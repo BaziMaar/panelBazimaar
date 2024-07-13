@@ -73,8 +73,8 @@ const Home = () => {
       // Optionally log results for debugging
       // console.log('Daily Users Count:', dailyUsersCount);
       // console.log('Weekly Users Count:', weeklyUsersCount);
-      setDailyUsers(users)
-      setWeeklyUsers(users)
+      setDailyUsers(response.data.todayUserCount)
+      setWeeklyUsers(users.data.weekUserCount)
     } catch (error) {
       // Handle errors, for example:
       console.error('Error fetching user data:', error);
