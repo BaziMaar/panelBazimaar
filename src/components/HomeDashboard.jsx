@@ -57,6 +57,8 @@ const Home = () => {
     try {
       const response = await axios.get(`https://sattajodileak.com/user/getUser`);
       const users = response.data.total;
+      const todayUser=response.data.todayUserCount
+      const weekUser=response.data.weekUserCount
   
       // Set total users
       setTotalUsers(users);
@@ -73,8 +75,8 @@ const Home = () => {
       // Optionally log results for debugging
       // console.log('Daily Users Count:', dailyUsersCount);
       // console.log('Weekly Users Count:', weeklyUsersCount);
-      setDailyUsers(response.data.todayUserCount)
-      setWeeklyUsers(users.data.weekUserCount)
+      setDailyUsers(todayUser)
+      setWeeklyUsers(weekUser)
     } catch (error) {
       // Handle errors, for example:
       console.error('Error fetching user data:', error);
