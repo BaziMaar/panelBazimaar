@@ -192,6 +192,10 @@ const Home = () => {
               <h2>UPI</h2>
               <p>all UPI : 3</p>
               </StyledCard>
+              <StyledCard   onClick={() => goToCardWindow('level')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Level</h2>
+              <p>all Level : 3</p>
+              </StyledCard>
 
           </div>
 

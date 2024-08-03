@@ -34,6 +34,8 @@ import DragonBets from './components/DragonBets';
 import LuckyBets from './components/LuckyBets';
 import ColorBets from './components/ColorBets';
 import MinesBets from './components/MinesBets';
+import ColorNewEntry from './components/ColorNewEntry';
+import LevelManager from './components/GetLevel';
 function App() {
   return (
         <Router>
@@ -71,6 +73,8 @@ function App() {
         <Route path="/dragonBets/:phone" element={<DragonBets/>}/>
         <Route path="/colorBets/:phone" element={<ColorBets/>}/>
         <Route path="/minesBets/:phone" element={<MinesBets/>}/>
+        <Route path="/colorNewEntry/:phone" element={<ColorNewEntry/>}/>
+        <Route path="/level" element={<LevelManager/>}/>
         
       </Routes>
     </Router>

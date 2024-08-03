@@ -171,6 +171,16 @@ const AllUsers = () => {
               </Button>
             ),
           },
+          {
+            field: 'All Color Button',
+            headerName: 'All Color Entry',
+            width: 150,
+            renderCell: (params) => (
+              <Button variant="contained" size="small" onClick={() => handleColorEntryBet(params.row.phone)}>
+                Color Entry
+              </Button>
+            ),
+          },
         ];
 
         setIsLoading(false);
@@ -189,6 +199,9 @@ const AllUsers = () => {
 
   const handleLuckyBet = (phone) => {
     window.open(`/luckyBets/${phone}`, '_blank');
+  };
+  const handleColorEntryBet = (phone) => {
+    window.open(`/colorNewEntry/${phone}`, '_blank');
   };
 
   const handleDragonBet = (phone) => {
