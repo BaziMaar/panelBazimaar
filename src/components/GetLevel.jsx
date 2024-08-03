@@ -7,9 +7,9 @@ const LevelManager = () => {
   const [newUpi, setNewUpi] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [autoDt, setAutoDt] = useState(0);
-  const [autoSpin, setAutoSpin] = useState(0);
-  const [autoColor, setAutoColor] = useState(0);
+  const [autoDt, setAutoDt] = useState('');
+  const [autoSpin, setAutoSpin] = useState('');
+  const [autoColor, setAutoColor] = useState('');
   const [level, setLevel] = useState('hard');
   const API_KEY = 'https://sattajodileak.com/user/getUser';
 
