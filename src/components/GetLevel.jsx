@@ -79,24 +79,6 @@ const LevelManager = () => {
     }
   };
 
-  const deleteUpi = async (upiToDelete) => {
-    try {
-      await axios.post('https://sattajodileak.com/user/removeUpi', 
-        { upi: upiToDelete },
-        {
-          headers: {
-            'Authorization': `Bearer ${API_KEY}`
-          }
-        }
-      );
-      alert(`${upiToDelete} deleted successfully`);
-      setUpiList(upiList.filter(upi => upi !== upiToDelete));
-    } catch (error) {
-      console.error('Error deleting UPI:', error);
-      setError('Error deleting UPI.');
-    }
-  };
-
   const handleLevelClick = async (level,type) => {
     let autoSpin, autoColor, autoDt;
     if(type===0){

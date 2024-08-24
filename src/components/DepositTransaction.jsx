@@ -2,101 +2,101 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Paper,
-  Table,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Grid,
   Drawer,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress,
   IconButton,
-  CircularProgress
+  Button,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CrossIcon from '../assets/cross.svg';
-import {Link} from 'react-router-dom'
-import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
-
 
 const DepositTable = () => {
   const [transactions, setTransactions] = useState([]);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [data,setData]=useState([]);
-  const [columns,setColumn]=useState([]);
+  const [data, setData] = useState([]);
+  const [columns, setColumns] = useState([]);
+  const [phone, setPhone] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const[activeColumn,setActiveColumn]=useState('')
+  const [activeColumn, setActiveColumn] = useState(null);
+  const [openBlock, setOpenBlock] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const handleColumnHeaderClick = (column) => {
-    setActiveColumn(column.field === activeColumn ? null : column.field);
-  };
+  const [message, setMessage] = useState('');
+  const [sortModel, setSortModel] = useState([]);
 
-  const filteredTransactions = transactions.filter((transaction) => {
-    // Convert both transaction.phone and searchQuery to strings, then filter based on the phone number
-    const phoneAsString = String(transaction.phone);
-    const searchQueryString = String(searchQuery);
-  
-    return phoneAsString.includes(searchQueryString);
-  });
-  
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://sattajodileak.com/wallet/getTrans`);
-        setTransactions(response.data.wallets);
-        console.log(response.data.wallets)
-        const depositData = response.data.wallets.reduce((acc, user) => {
-            const userDeposits = user.walletTrans
-              .filter((transaction) => transaction.amount >= 0)  // Filter deposits
-              .map((transaction) => ({
-                key: transaction._id,
-                phone: user.phone,
-                amount: Math.abs(transaction.amount).toFixed(2),
-                amount_status: 'Deposit',
-                time: new Date(transaction.time).toLocaleString(),
-                paymentId: transaction.paymentId,
-                bankId: transaction.bankId,
-                ifscCode: transaction.ifscCode,
-              }));
-            
-            return [...acc, ...userDeposits];
-          }, []);
-        const sortedData = depositData.reverse();
-        
-        setData(sortedData)
-        const columns=[
+        const response = await axios.get('https://sattajodileak.com/wallet/getTrans');
+        const fetchedData = response.data.wallets.reduce((acc, user) => {
+          const userDeposits = user.walletTrans
+            .filter((transaction) => transaction.amount >= 0)
+            .map((transaction) => ({
+              key: transaction._id,
+              phone: user.phone,
+              amount: Math.abs(transaction.amount).toFixed(2),
+              amount_status: 'Deposit',
+              time: new Date(transaction.time).toLocaleString(),
+              paymentId: transaction.paymentId,
+              bankId: transaction.bankId,
+              ifscCode: transaction.ifscCode,
+              utr: transaction.utr,
+              status: transaction.status === 0 ? 'Pending' : transaction.status === 1 ? 'Approved' : 'Rejected',
+            }));
+
+          return [...acc, ...userDeposits];
+        }, []);
+
+        const sortedData = fetchedData.reverse();
+        setData(sortedData);
+
+        setColumns([
+          { field: 'phone', headerName: 'Phone', width: 150 },
+          { field: 'amount', headerName: 'Amount', width: 100 },
+          { field: 'amount_status', headerName: 'Request Type', width: 150 },
+          { field: 'status', headerName: 'Status', width: 120 },
+          { field: 'utr', headerName: 'UTR No.', width: 200 },
+          { field: 'time', headerName: 'Time', width: 200 },
           {
-            "field":"phone",
-            "headerName":"Phone",
-            width:300,
-            cellClassName:'property'
+            field: 'accept',
+            headerName: 'Accept Payment',
+            width: 180,
+            renderCell: (params) =>
+              params.row.utr && params.row.status === 'Pending' ? (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => handlePayment(params.row.phone, params.row.amount, 'accept', params.row.key)}
+                >
+                  Accept
+                </Button>
+              ) : null,
           },
           {
-            "field":"amount",
-            "headerName":"Amount",
-            width:300,
-            cellClassName:'property'
+            field: 'reject',
+            headerName: 'Reject Payment',
+            width: 180,
+            renderCell: (params) =>
+              params.row.utr && params.row.status === 'Pending' ? (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => handleOpenBlock(params.row.phone, params.row.amount, 'accept', params.row.key)}
+                >
+                  Reject
+                </Button>
+              ) : null,
           },
-          {
-            "field":"amount_status",
-            "headerName":"Request Type",
-            width:300,
-            cellClassName:'property'
-          },
-          
-          {
-            "field":"time",
-            "headerName":"Time",
-            width:500,
-            cellClassName:'property'
-          }
-          
-      ]
-      setIsLoading(false);
-      setColumn(columns)
+        ]);
+
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -104,96 +104,102 @@ const DepositTable = () => {
 
     fetchData();
   }, []);
-  const [sortModel, setSortModel] = useState([]);
 
-  const handleSortModelChange = (newModel) => {
-    setSortModel(newModel);
+  const handleOpenBlock = (phone) => {
+    setOpenBlock(true);
+    setIsButtonDisabled(true)
+    setPhone(phone);
   };
 
-  const renderSortIndicator = (field) => {
-    const sortedColumn = sortModel.find((column) => column.field === field);
-    if (sortedColumn) {
-      return sortedColumn.sort === 'asc' ? '↑' : '↓';
+  const handleCloseBlock = () => {
+    setOpenBlock(false);
+    setPhone('');
+    setMessage('');
+  };
+
+  const handleBlockMessage = (event) => {
+    setMessage(event.target.value);
+  };
+
+  const handleRejectSubmit = async (phone,amount,status,id) => {
+    try {
+      await updateStatus(phone,amount, 2, id); // Assuming -1 is a placeholder for the amount in case of rejection
+      const user = await axios.get(`https://sattajodileak.com/user/getUser?search=${phone}`);
+      const token = user.data.data[0].token;
+
+      await axios.post('https://sattajodileak.com/notification/send', {
+        token: token,
+        title: 'Payment Rejected by BaaziMaar',
+        body: message,
+      });
+
+      handleCloseBlock();
+    } catch (error) {
+      console.error('Error blocking user or sending notification:', error);
     }
-    return null;
   };
 
-  const CustomHeaderCell = ({ column }) => (
-    <div style={{fontSize:'20px',fontWeight:'bold'}}>
-      {column.headerName}
-      {renderSortIndicator(column.field)}
-    </div>
-  );
+  const handlePayment = async (phone, amount, status, id) => {
+    setIsButtonDisabled(true);
+    try {
+      await updateStatus(phone, amount, 1, id); // Status 1 means approved
+      const user = await axios.get(`https://sattajodileak.com/user/getUser?search=${phone}`);
+      const token = user.data.data[0].token;
+
+      await axios.post('https://sattajodileak.com/notification/send', {
+        token: token,
+        title: 'Payment Accepted by BaaziMaar',
+        body: `Your payment of amount ${amount} has been accepted.`,
+      });
+
+      alert(`Payment of ${amount} accepted for phone number ${phone}.`);
+      setIsButtonDisabled(false);
+    } catch (error) {
+      console.error('Error accepting payment:', error);
+      setIsButtonDisabled(false);
+    }
+  };
+
+  const updateStatus = async (phone, amount, status, id) => {
+    try {
+      await axios.post('https://sattajodileak.com/wallet/updateStatus', {
+        phone,
+        amount,
+        status,
+        id,
+      });
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
+
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
   };
+
   const linkStyle = {
     textDecoration: 'none',
     fontSize: '16px',
     margin: '8px 0',
     display: 'block',
-    transition: 'color 0.3s',
-    backgroundColor:'#081A30',
-    color:'lightblue'
+    backgroundColor: '#081A30',
+    color: 'lightblue',
+    padding: '10px',
+    borderRadius: '5px',
   };
-  
-  linkStyle[':hover'] = {
-    color: '#007bff',
-  };
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(`https://sattajodileak.com/wallet/pendingTrans`);
-      setTransactions(response.data.wallets);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-  const handlePayment=async(phone, amount, status,id)=> {
-    
-    setIsButtonDisabled(true);
-    // Implement your payment logic here
-    alert(`Making payment for phone ${phone} with amount ${amount}. and status${status}.`);
-
-    // Update status to 1 (Success
-    await axios.get(`https://sattajodileak.com/wallet/getTrans`);
-    await updateStatus(phone, amount, status,id);
-    
-  }
-  const updateStatus=async(phone, amount, status,id)=> {
-    // Make a POST request to update the status
-    fetch(`https://sattajodileak.com/wallet/updateStatus`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            phone: phone,
-            amount: amount,
-            status: status,
-            id:id
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-    })
-    .catch(error => console.error('Error updating status:', error));
-}
-
 
   return (
     <div>
-      {/* Header with Sidebar Button */}
       <header
-      style={{
-        backgroundColor: '#102339',
-        color: 'lightblue',
-        textAlign: 'center',
-        padding: '10px',
-        display: 'flex',
-        alignItems: 'center',
-        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Add shadow
-        zIndex: 1, // Ensure header is on top of other elements
-      }}
+        style={{
+          backgroundColor: '#102339',
+          color: 'lightblue',
+          textAlign: 'center',
+          padding: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        }}
       >
         <IconButton
           color="inherit"
@@ -204,101 +210,89 @@ const DepositTable = () => {
         >
           <MenuIcon />
         </IconButton>
-        <div style={{marginLeft:'6in'}}><h2>Deposit Transactions</h2></div>
+        <div style={{ marginLeft: '6in' }}>
+          <h2>Deposit Transactions</h2>
+        </div>
       </header>
 
-      {/* Sidebar Drawer */}
-      <Drawer 
-      anchor="left"
-      open={isDrawerOpen}
-      onClose={toggleDrawer(false)}
-      // style={{background:'#102339'}}
-    >
-      <div style={{ textAlign: 'left', padding: '10px', background:'#102339',  }}>
-                <img src={CrossIcon} alt="Hamburger Icon" style={{ width: '25px', height: '25px', cursor: 'pointer', background:'white', borderRadius:'17px'}} onClick={toggleDrawer(false)}/>
-                </div>
-      {/* Sidebar content goes here */}
-      <div style={{  height: '100vh',width: '250px', padding: '20px', background: '#102339'}}>
-        {/* List of links in the drawer */}
-        <Link to="/transaction" onClick={() => setDrawerOpen(false)} style={linkStyle}>All Transactions</Link>
-        <Link to="/pending" onClick={() => setDrawerOpen(false)} style={linkStyle}>Pending Requests</Link>
-        <Link to="/approved" onClick={() => setDrawerOpen(false)} style={linkStyle}>Approved Transactions</Link>
-        <Link to="/users" onClick={() => setDrawerOpen(false)} style={linkStyle}>All Users</Link>
-        <Link to="/weeklyUsers" onClick={() => setDrawerOpen(false)} style={linkStyle}>Weekly Users</Link>
-        <Link to="/daily" onClick={() => setDrawerOpen(false)} style={linkStyle}>Daily Transactions</Link>
-        <Link to="/week" onClick={() => setDrawerOpen(false)} style={linkStyle}>Weekly Transactions</Link>
-      </div>
-    </Drawer>
-    {isLoading ? ( // Conditional rendering based on loading state
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 64px)' ,background:'#081A30'}}>
-          <CircularProgress />
+      <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+        <div style={{ textAlign: 'left', padding: '10px', background: '#102339' }}>
+          <img
+            src={CrossIcon}
+            alt="Close Icon"
+            style={{ width: '25px', height: '25px', cursor: 'pointer', background: 'white', borderRadius: '17px' }}
+            onClick={toggleDrawer(false)}
+          />
         </div>
-      ) : (<DataGrid
-        rows={data}
-        columns={columns.map((column) => ({
-          ...column,
-          headerName: (
-            <CustomHeaderCell column={column} />
-          ),
-        }))}
-        sortModel={sortModel}
-        onSortModelChange={handleSortModelChange}
-        components={{
-          ColumnHeaderCell: ({ column }) => (
-            <div onClick={() => handleColumnHeaderClick(column)}>
-              {column.headerName}
-              {renderSortIndicator(column.field)}
-            </div>
-          ),
-        }}
-        getRowId={(row) => row.key}
-        pageSizeOptions={[5, 10, 15, 20, 25, 50, 100]}
-        getRowSpacing={(params) => ({
-          top: params.isFirstVisible ? 0 : 10,
-          bottom: params.isLastVisible ? 0 : 10,
-        })}
-        componentsProps={{
-          toolbar: {
-            showQuickFilter: true,
-            quickFilterProps: { debounceMs: 500 },
-          },
-        }}
-        sx={{
-          '&.MuiDataGrid-root': {
-            bgcolor: '#081A30', // Change background color
-            color: 'lightblue',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Add shadow
-          },
-          '&.MuiDataGrid-filterIcon': {
-            bgcolor: '#102339',
-            color: 'lightblue',
-            borderColor: 'transparent',
-          },
-          '& .MuiDataGrid-cell, & .MuiDataGrid-colCellTitle': {
-            background:'#102339'
-          },
-          '.css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar': {
-            color: 'lightblue'
-            /* Add any other styles you want to apply */
-          }
-        }}/>
-      )}
-      {/* Main Content */}
+        <div style={{ height: '100vh', width: '250px', padding: '20px', background: '#102339' }}>
+          <Link to="/transaction" onClick={() => setDrawerOpen(false)} style={linkStyle}>
+            All Transactions
+          </Link>
+          <Link to="/pending" onClick={() => setDrawerOpen(false)} style={linkStyle}>
+            Pending Requests
+          </Link>
+          <Link to="/approved" onClick={() => setDrawerOpen(false)} style={linkStyle}>
+            Approved Transactions
+          </Link>
+          <Link to="/users" onClick={() => setDrawerOpen(false)} style={linkStyle}>
+            All Users
+          </Link>
+          <Link to="/weeklyUsers" onClick={() => setDrawerOpen(false)} style={linkStyle}>
+            Weekly Users
+          </Link>
+          <Link to="/daily" onClick={() => setDrawerOpen(false)} style={linkStyle}>
+            Daily Transactions
+          </Link>
+          <Link to="/week" onClick={() => setDrawerOpen(false)} style={linkStyle}>
+            Weekly Transactions
+          </Link>
+        </div>
+      </Drawer>
 
-      {/* Footer */}
-      <footer
-        style={{
-          backgroundColor: '#102339',
-          color: 'lightblue',
-          textAlign: 'center',
-          padding: '10px',
-        }}
-      >
-        <p>&copy; 2024 baazi Maar</p>
-      </footer>
+      <Paper style={{ padding: '20px', margin: '20px' }}>
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <div style={{ height: 500, width: '100%' }}>
+            <DataGrid
+              rows={data}
+              columns={columns}
+              sortModel={sortModel}
+              onSortModelChange={(newModel) => setSortModel(newModel)}
+              getRowId={(row) => row.key}
+              initialState={{
+                sorting: { sortModel: [{ field: 'time', sort: 'desc' }] },
+              }}
+            />
+          </div>
+        )}
+      </Paper>
+
+      <Dialog open={openBlock} onClose={handleCloseBlock}>
+        <DialogTitle>Reject Payment</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="message"
+            label="Rejection Reason"
+            type="text"
+            fullWidth
+            value={message}
+            onChange={handleBlockMessage}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseBlock} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleRejectSubmit} color="secondary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
 
 export default DepositTable;
-
