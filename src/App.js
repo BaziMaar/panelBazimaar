@@ -36,6 +36,7 @@ import ColorBets from './components/ColorBets';
 import MinesBets from './components/MinesBets';
 import ColorNewEntry from './components/ColorNewEntry';
 import LevelManager from './components/GetLevel';
+import PendingDepositTable from './components/PendingDepositTransaction';
 function App() {
   return (
         <Router>
@@ -75,6 +76,8 @@ function App() {
         <Route path="/minesBets/:phone" element={<MinesBets/>}/>
         <Route path="/colorNewEntry/:phone" element={<ColorNewEntry/>}/>
         <Route path="/level" element={<LevelManager/>}/>
+        <Route path="/pendingDeposit" element={<PendingDepositTable/>}/>
+
         
       </Routes>
     </Router>

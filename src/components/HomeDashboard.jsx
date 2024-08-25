@@ -234,6 +234,13 @@ const Home = () => {
               <p>Weekly Deposit: {weeklyDeposit}</p>
               <p>Today Deposit: {todayDeposit}</p>
             </StyledCard>
+            <StyledCard onClick={() => goToCardWindow('pendingDeposit')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Pending Deposit Transaction</h2>
+              <p>Total Deposit: {totalDeposit}</p>
+              <p>Weekly Deposit: {weeklyDeposit}</p>
+              <p>Today Deposit: {todayDeposit}</p>
+            </StyledCard>
+            
             <StyledCard onClick={() => goToCardWindow("withdraw")} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Withdraw Transactions</h2>
               <p>Total Withdrawal: {totalWithdrawal}</p>
