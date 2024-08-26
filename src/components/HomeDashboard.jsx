@@ -252,6 +252,9 @@ const Home = () => {
             <h2>Aviator</h2>
           </div>
           <div className="dashboard">
+          <StyledCard onClick={() => goToCardWindow('plinko')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
+              <h2>Plinko Bets</h2>
+            </StyledCard>
             <StyledCard onClick={() => goToCardWindow('winAviatorEntry')} gradient="linear-gradient(-20deg, #2b5876 0%, #4e4376 100%)">
               <h2>Winning Bets</h2>
             </StyledCard>
