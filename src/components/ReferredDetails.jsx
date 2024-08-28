@@ -62,12 +62,6 @@ const ReferredDetails = () => {
   };
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    const storedPassword = localStorage.getItem('password');
-
-    if (storedUsername !== 'ashu' || storedPassword !== '54321@sHu') {
-      window.location.replace('/');
-    }
     fetchData();
   }, []);  // Empty dependency array, runs only once on mount
 
