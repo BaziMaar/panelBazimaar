@@ -18,12 +18,15 @@ const ReferredDetails = () => {
   const [looseAmount, setLosingAmount] = useState(0);
   const [refAmount, setRefAmount] = useState(0);
   const [groupedTransactions, setGroupedTransactions] = useState([]);
+  const [Referred,setReferred]=useState('');
 
   const fetchData = async () => {
     try {
       const response = await axios.get(`https://sattajodileak.com/wallet/getReferred?phone=${phone}`);
+      const users=await axios.get(`https://sattajodileak.com/user/getUser?search=${phone}`)
       const transactions = response.data.referred;
-      console.log(transactions);
+      const referred=users.data.data[0].refer_id.length
+      setReferred(referred)
 
       const grouped = transactions.reduce((acc, transaction) => {
         const userId = transaction.user_id;
@@ -74,6 +77,7 @@ const ReferredDetails = () => {
     { field: 'totalAmount', headerName: 'Total Earn by Refer', width: 300 },
     { field: 'totalDeposit', headerName: 'Total Deposit', width: 300 },
     { field: 'totalWithdraw', headerName: 'Total Withdraw', width: 300 },
+
     { field: 'date', headerName: 'Date', width: 300 },
     { field: 'time', headerName: 'Time', width: 300 }
   ];
@@ -133,6 +137,16 @@ const ReferredDetails = () => {
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', padding: '20px', background: '#F1F1F1' }}>
         <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+        <Card sx={{ maxWidth: 275, background: 'white', color: 'black' }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Total Referred Users
+              </Typography>
+              <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                {Referred}
+              </Typography>
+            </CardContent>
+          </Card>
           <Card sx={{ maxWidth: 275, background: 'white', color: 'black' }}>
             <CardContent>
               <Typography variant="h5" component="div">
@@ -143,6 +157,7 @@ const ReferredDetails = () => {
               </Typography>
             </CardContent>
           </Card>
+
 
           <Card sx={{ maxWidth: 300, background: 'white', color: 'black' }}>
             <CardContent>
